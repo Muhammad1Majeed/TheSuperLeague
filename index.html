@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السوبر ليغ | المنصة الرسمية للبطولة</title>
+    <title>السوبر ليغ | المنصة الرسمية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
     
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <style>
-        /* ================= المتغيرات والهوية المستقبلية ================= */
+        /* ================= المتغيرات والهوية ================= */
         :root {
             --bg-base: #020205;
             --bg-glass: rgba(12, 12, 20, 0.55);
@@ -31,7 +34,6 @@
             background-color: var(--bg-base);
             color: var(--text-light);
             min-height: 100vh;
-            /* خلفية ديناميكية حديثة */
             background-image: 
                 radial-gradient(circle at 10% 10%, rgba(0, 68, 255, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 90% 90%, rgba(255, 0, 85, 0.08) 0%, transparent 40%),
@@ -46,7 +48,6 @@
         ::-webkit-scrollbar-thumb { background: #1a1d36; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-cyan); }
 
-        /* ================= تأثيرات الزجاج العامة ================= */
         .glass-panel {
             background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
             backdrop-filter: blur(16px);
@@ -64,15 +65,11 @@
         }
 
         .brand-title {
-            font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 5px;
+            font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px;
             background: linear-gradient(to right, #fff, var(--primary-cyan));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
-            letter-spacing: -1px;
-        }
-        .brand-subtitle {
-            color: var(--text-muted); font-size: 1.2rem; font-weight: 600; margin-bottom: 50px;
-            text-transform: uppercase; letter-spacing: 2px;
+            letter-spacing: -1px; text-align: center;
         }
 
         .players-grid {
@@ -170,7 +167,6 @@
         .team-info img { width: 38px; height: 38px; object-fit: contain; }
         .team-info .name { font-weight: 900; color: #fff; font-size: 1.05rem; }
         .team-info .club { font-size: 0.8rem; color: var(--text-muted); }
-
         .pts-col { color: var(--primary-cyan); font-size: 1.25rem; font-weight: 900; background: rgba(0, 240, 255, 0.02); }
 
         /* ================= قسم الإدارة والمباريات ================= */
@@ -184,19 +180,13 @@
             background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.1);
             padding: 14px 25px; border-radius: 12px; font-size: 1.05rem; font-weight: 800;
             outline: none; cursor: pointer; transition: var(--transition-fast); appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: left 20px top 50%; background-size: 12px auto;
         }
-        .custom-select:focus { border-color: var(--admin-gold); box-shadow: 0 0 15px rgba(255, 184, 0, 0.15); }
 
         .matches-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
-        
         .match-card {
             border-radius: 20px; padding: 25px; display: flex; flex-direction: column; gap: 15px;
             transition: var(--transition-fast);
         }
-        .match-card:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); }
-        
         .teams-row { display: flex; justify-content: space-between; align-items: center; }
         .team { display: flex; flex-direction: column; align-items: center; width: 35%; text-align: center; gap: 10px; }
         .team img { width: 55px; height: 55px; object-fit: contain; }
@@ -206,19 +196,16 @@
         .score-input {
             width: 55px; height: 55px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);
             color: var(--primary-cyan); font-size: 1.6rem; font-weight: 900; text-align: center; border-radius: 12px;
-            transition: var(--transition-fast);
         }
-        .score-input:focus { border-color: var(--primary-cyan); outline: none; box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.2); }
         .vs { color: var(--text-muted); font-weight: 900; font-size: 0.9rem; }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-blue), #002288); color: white;
             border: none; padding: 20px; border-radius: 16px; font-size: 1.15rem; font-weight: 900;
             cursor: pointer; width: 100%; margin-top: 30px; transition: var(--transition-fast);
-            box-shadow: 0 10px 25px rgba(0, 68, 255, 0.3); text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 10px 25px rgba(0, 68, 255, 0.3); text-transform: uppercase;
         }
         .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0, 68, 255, 0.5); }
-        .btn-primary:active { transform: translateY(0); }
 
         /* ================= شاشة مبارياتي ================= */
         .my-matches-wrapper { display: flex; flex-direction: column; gap: 15px; max-width: 900px; margin: 0 auto; }
@@ -226,17 +213,25 @@
             padding: 25px 30px; display: flex; justify-content: space-between; align-items: center;
             border-radius: 20px; transition: var(--transition-fast);
         }
-        .my-match-item:hover { background: rgba(255,255,255,0.03); transform: scale(1.01); }
-        
         .match-meta { display: flex; flex-direction: column; gap: 8px; }
         .round-label { background: rgba(255,255,255,0.05); padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; color: #fff; font-weight: 900; text-align: center;}
-        
         .score-box {
             background: rgba(0,0,0,0.6); padding: 12px 30px; border-radius: 14px;
             font-size: 1.8rem; font-weight: 900; letter-spacing: 4px; color: var(--primary-cyan);
-            border: 1px solid rgba(0,240,255,0.2); box-shadow: inset 0 0 15px rgba(0,240,255,0.05);
+            border: 1px solid rgba(0,240,255,0.2);
         }
-        .score-box.pending { color: var(--text-muted); font-size: 1rem; font-weight: 700; letter-spacing: 0; border-style: dashed; background: transparent; box-shadow: none; }
+        .score-box.pending { color: var(--text-muted); font-size: 1rem; font-weight: 700; letter-spacing: 0; border-style: dashed; background: transparent; }
+
+        /* ================= حالة النظام ================= */
+        .system-status {
+            position: fixed; bottom: 20px; left: 20px; z-index: 9999;
+            padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 800;
+            display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.7);
+            border: 1px solid var(--border-glass-strong); backdrop-filter: blur(10px);
+        }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-local { background: #ffb800; box-shadow: 0 0 12px #ffb800; }
+        .dot-live { background: #00f0ff; box-shadow: 0 0 12px #00f0ff; }
 
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; justify-content: center; gap: 15px; padding: 15px; }
@@ -301,18 +296,26 @@
                     </div>
                     <select class="custom-select" id="round-select" onchange="loadAdminRound()"></select>
                 </div>
-
                 <div id="draw-section" style="margin-bottom:25px;"></div>
-
                 <div class="matches-grid" id="admin-matches-container"></div>
-                <button class="btn-primary" onclick="saveRoundResults()">حفظ واعتماد النتائج</button>
+                <button class="btn-primary" id="save-btn" onclick="saveRoundResults()">حفظ واعتماد النتائج</button>
             </section>
-
         </main>
     </div>
 
     <script>
-        // البيانات الرسمية
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyDYDSaOBIggJZCxdr5GpKuybVWRmheDeZk",
+            authDomain: "superleague-ade00.firebaseapp.com",
+            databaseURL: "https://superleague-ade00-default-rtdb.firebaseio.com", // تمت إضافة الرابط المطلوب للعمل
+            projectId: "superleague-ade00",
+            storageBucket: "superleague-ade00.firebasestorage.app",
+            messagingSenderId: "302472752303",
+            appId: "1:302472752303:web:667c3971350051c583785a",
+            measurementId: "G-Z4NMNMHHRP"
+        };
+
         const officialPlayers = [
             { id: 1, name: "محمد مجيد", club: "النصر السعودي", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/5bac387e-a96a-4133-923f-4bf011d5613e.png", isAdmin: true },
             { id: 2, name: "عمر محمد", club: "ريال مدريد", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg", isAdmin: false },
@@ -332,15 +335,44 @@
             { id: 16, name: "خطاب احمد", club: "كومو", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/3f302b65-1266-4b34-8007-3ed20dabf39e.png", isAdmin: false }
         ];
 
-        let state = {
-            currentUser: null,
-            teamsStats: [],
-            fixtures: [],
-            drawDone: false
+        let state = { currentUser: null, teamsStats: [], fixtures: [], drawDone: false };
+        let isOnline = false;
+        let db = null;
+
+        // الفحص الذكي: تم تفعيل الفايربيس بمفاتيحك الحقيقية
+        if (firebaseConfig.apiKey) {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                isOnline = true;
+            } catch (e) {
+                console.error("Firebase Error:", e);
+            }
+        }
+
+        // محرك المزامنة الذكي للقرعة والنتائج (يبث ويستقبل من السحابة)
+        const SyncEngine = {
+            save: function() {
+                const dataToSave = { teamsStats: state.teamsStats, fixtures: state.fixtures, drawDone: state.drawDone };
+                if (isOnline) {
+                    db.ref('superleague_live').set(dataToSave);
+                } else {
+                    localStorage.setItem('sl_local_db', JSON.stringify(dataToSave));
+                    refreshUI(dataToSave); 
+                }
+            },
+            listen: function() {
+                if (isOnline) {
+                    // هنا يتم استلام أي تحديث يحدث من لوحة التحكم (قرعة أو نتائج) وعرضه فوراً
+                    db.ref('superleague_live').on('value', snap => refreshUI(snap.val()));
+                } else {
+                    const localDb = JSON.parse(localStorage.getItem('sl_local_db'));
+                    refreshUI(localDb);
+                }
+            }
         };
 
         function init() {
-            // رسم الكروت
             document.getElementById('players-grid').innerHTML = officialPlayers.map(p => `
                 <div class="player-card ${p.isAdmin ? 'admin-card' : ''}" onclick="login(${p.id})">
                     <img src="${p.logo}" class="player-logo" loading="lazy">
@@ -350,29 +382,74 @@
                 </div>
             `).join('');
 
-            const localData = localStorage.getItem('superleague_v4');
-            if (localData) {
-                let parsed = JSON.parse(localData);
-                state.teamsStats = parsed.teamsStats || [];
-                state.fixtures = parsed.fixtures || [];
-                state.drawDone = parsed.drawDone || false;
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'system-status';
+            statusDiv.innerHTML = isOnline 
+                ? '<div class="status-dot dot-live"></div> متصل بالسحابة (بث حي)' 
+                : '<div class="status-dot dot-local"></div> وضع محلي (تطوير ومحاكاة)';
+            document.body.appendChild(statusDiv);
+
+            SyncEngine.listen();
+
+            const savedUserId = localStorage.getItem('sl_logged_user');
+            if (savedUserId) login(parseInt(savedUserId), true);
+        }
+
+        function refreshUI(data) {
+            if (data) {
+                state.teamsStats = data.teamsStats || [];
+                state.fixtures = data.fixtures || [];
+                state.drawDone = data.drawDone || false;
             } else {
                 state.teamsStats = officialPlayers.map(p => ({ id: p.id, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 }));
                 state.fixtures = [];
                 state.drawDone = false;
-                saveDb();
+                if (!isOnline) SyncEngine.save();
             }
 
-            // التحقق من وجود تسجيل دخول مسبق
-            const savedUserId = localStorage.getItem('superleague_logged_user');
-            if (savedUserId) {
-                login(parseInt(savedUserId));
+            if (state.currentUser) {
+                if (state.currentUser.isAdmin) setupAdmin();
+                renderMyMatches();
             }
+            calcStats();
         }
 
-        // خوارزمية إنشاء الـ 8 جولات السويسرية
-        function generateFixtures() {
+        function login(id, isAuto = false) {
+            const user = officialPlayers.find(p => p.id === id);
+            if (!user) return;
+
+            if (user.isAdmin && !isAuto) {
+                const password = prompt("يرجى إدخال الرمز السري للمنظم لتفعيل الصلاحيات:");
+                if (password !== "09128734") {
+                    alert("❌ الرمز السري خاطئ!");
+                    return;
+                }
+            }
+
+            state.currentUser = user;
+            localStorage.setItem('sl_logged_user', id);
+            
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            
+            document.getElementById('nav-logo').src = user.logo;
+            document.getElementById('nav-name').innerText = user.name;
+            document.getElementById('nav-club').innerText = user.club;
+
+            if (user.isAdmin) {
+                document.getElementById('admin-tab').style.display = 'block';
+                setupAdmin();
+            } else {
+                document.getElementById('admin-tab').style.display = 'none';
+            }
+            refreshUI({ teamsStats: state.teamsStats, fixtures: state.fixtures, drawDone: state.drawDone });
+        }
+
+        function officialDraw() {
+            if (state.drawDone) return;
+            state.fixtures = [];
             state.teamsStats = officialPlayers.map(p => ({ id: p.id, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 }));
+            
             let teamIds = officialPlayers.map(p => p.id);
             let n = teamIds.length;
             let mId = 1;
@@ -388,54 +465,15 @@
                 }
                 teamIds.splice(1, 0, teamIds.pop());
             }
-        }
-
-        function officialDraw() {
-            if (state.drawDone) return;
-
-            state.fixtures = [];
-            generateFixtures();
             state.drawDone = true;
-            saveDb();
-
-            loadAdminRound();
-            calcStats();
-            renderMyMatches();
-
-            document.getElementById('draw-section').innerHTML = '';
-
-            alert('تم إجراء القرعة الرسمية واعتماد جدول البطولة بنجاح ✅');
-        }
-
-        function login(id) {
-            const user = officialPlayers.find(p => p.id === id);
-            state.currentUser = user;
-            
-            // التعديل الجديد: حفظ ID اللاعب في المتصفح بشكل دائم
-            localStorage.setItem('superleague_logged_user', id);
-            
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            
-            document.getElementById('nav-logo').src = user.logo;
-            document.getElementById('nav-name').innerText = user.name;
-            document.getElementById('nav-club').innerText = user.club;
-
-            if (user.isAdmin) {
-                document.getElementById('admin-tab').style.display = 'block';
-                setupAdmin();
-            }
-            calcStats();
-            renderMyMatches();
+            SyncEngine.save(); // بمجرد الحفظ هنا، سيظهر الجدول فوراً لدى جميع اللاعبين بفضل المزامنة
+            alert('تم إجراء القرعة وبث الجدول بنجاح ✅');
         }
 
         function calcStats() {
             state.teamsStats.forEach(t => { t.p=0; t.w=0; t.d=0; t.l=0; t.gf=0; t.ga=0; t.gd=0; t.pts=0; });
 
-            if (!state.drawDone) {
-                renderTable();
-                return;
-            }
+            if (!state.drawDone) { renderTable(); return; }
 
             state.fixtures.forEach(m => {
                 if (m.homeScore !== null && m.awayScore !== null) {
@@ -452,19 +490,10 @@
             });
 
             state.teamsStats.forEach(t => { t.gd = t.gf - t.ga; });
-            
-            // الفرز المتقدم
             state.teamsStats.sort((a, b) => {
                 if (b.pts !== a.pts) return b.pts - a.pts;
                 if (b.gf !== a.gf) return b.gf - a.gf;
                 if (a.ga !== b.ga) return a.ga - b.ga;
-                
-                let dm = state.fixtures.find(m => (m.homeId === a.id && m.awayId === b.id) || (m.homeId === b.id && m.awayId === a.id));
-                if (dm && dm.homeScore !== null) {
-                    let sA = dm.homeId === a.id ? dm.homeScore : dm.awayScore;
-                    let sB = dm.homeId === b.id ? dm.homeScore : dm.awayScore;
-                    return sB - sA;
-                }
                 return 0;
             });
             renderTable();
@@ -472,13 +501,7 @@
 
         function renderTable() {
             if (!state.drawDone) {
-                document.getElementById('standings-body').innerHTML = `
-                    <tr>
-                        <td colspan="11" style="padding:40px; color:var(--text-muted); font-weight:900;">
-                            لم يتم إجراء القرعة الرسمية بعد
-                        </td>
-                    </tr>
-                `;
+                document.getElementById('standings-body').innerHTML = `<tr><td colspan="11" style="padding:40px; color:var(--text-muted); font-weight:900;">بانتظار القرعة الرسمية...</td></tr>`;
                 return;
             }
 
@@ -487,8 +510,7 @@
                 const p = officialPlayers.find(x => x.id === t.id);
                 const isMe = state.currentUser && state.currentUser.id === p.id;
                 const r = i + 1;
-                const isQ = r <= 8;
-                const badge = isQ ? '<span class="status-badge badge-qual">ربع النهائي</span>' : '<span class="status-badge badge-out">إقصاء</span>';
+                const badge = r <= 8 ? '<span class="status-badge badge-qual">ربع النهائي</span>' : '<span class="status-badge badge-out">إقصاء</span>';
                 const rowClass = r === 8 ? 'qualified-boundary' : '';
                 const bg = isMe ? 'background: rgba(0, 240, 255, 0.08); border-right: 4px solid var(--primary-cyan);' : '';
 
@@ -507,20 +529,15 @@
                     <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td>
                     <td style="color:#00e676">${t.gf}</td><td style="color:#ff1744">${t.ga}</td>
                     <td style="direction:ltr; color:${t.gd > 0 ? '#00f0ff' : t.gd < 0 ? '#ff0055' : 'inherit'}">${t.gd > 0 ? '+'+t.gd : t.gd}</td>
-                    <td class="pts-col">${t.pts}</td>
-                    <td>${badge}</td>
+                    <td class="pts-col">${t.pts}</td><td>${badge}</td>
                 </tr>`;
             });
             document.getElementById('standings-body').innerHTML = html;
         }
 
         function renderMyMatches() {
-            if (!state.drawDone || state.fixtures.length === 0) {
-                document.getElementById('my-matches-container').innerHTML = `
-                    <div class="glass-panel my-match-item" style="justify-content:center;">
-                        لم يتم إجراء القرعة الرسمية بعد
-                    </div>
-                `;
+            if (!state.drawDone) {
+                document.getElementById('my-matches-container').innerHTML = `<div class="glass-panel my-match-item" style="justify-content:center;">بانتظار القرعة الرسمية...</div>`;
                 return;
             }
 
@@ -532,10 +549,7 @@
                 const opp = officialPlayers.find(p => p.id === (isH ? m.awayId : m.homeId));
                 let ms = isH ? m.homeScore : m.awayScore;
                 let os = isH ? m.awayScore : m.homeScore;
-                
-                let scoreHtml = (ms !== null) 
-                    ? `<div class="score-box">${ms} - ${os}</div>` 
-                    : `<div class="score-box pending">لم تُلعب</div>`;
+                let scoreHtml = (ms !== null) ? `<div class="score-box">${ms} - ${os}</div>` : `<div class="score-box pending">لم تُلعب</div>`;
 
                 html += `
                 <div class="glass-panel my-match-item">
@@ -561,31 +575,22 @@
 
         function setupAdmin() {
             const sel = document.getElementById('round-select');
-            sel.innerHTML = '';
-            for(let i=1; i<=8; i++) sel.innerHTML += `<option value="${i}">استعراض مباريات الجولة ${i}</option>`;
+            if (sel.innerHTML === '') {
+                for(let i=1; i<=8; i++) sel.innerHTML += `<option value="${i}">مباريات الجولة ${i}</option>`;
+            }
             
             const drawSection = document.getElementById('draw-section');
-
             if (!state.drawDone) {
-                drawSection.innerHTML = `
-                    <button class="btn-primary" onclick="officialDraw()">
-                        إجراء القرعة الرسمية
-                    </button>
-                `;
+                drawSection.innerHTML = `<button class="btn-primary" onclick="officialDraw()">إجراء القرعة الرسمية 🎲</button>`;
             } else {
                 drawSection.innerHTML = '';
             }
-
             loadAdminRound();
         }
 
         function loadAdminRound() {
             if (!state.drawDone) {
-                document.getElementById('admin-matches-container').innerHTML = `
-                    <div class="glass-panel match-card" style="text-align:center;">
-                        لم يتم إجراء القرعة الرسمية بعد
-                    </div>
-                `;
+                document.getElementById('admin-matches-container').innerHTML = `<div class="glass-panel match-card" style="text-align:center;">يجب إجراء القرعة أولاً</div>`;
                 return;
             }
 
@@ -599,21 +604,15 @@
                 
                 html += `
                 <div class="glass-panel match-card" data-id="${m.id}">
-                    <div style="text-align:center; color:var(--text-muted); font-weight:800; font-size:0.8rem;">رقم المباراة #${m.id}</div>
+                    <div style="text-align:center; color:var(--text-muted); font-weight:800; font-size:0.8rem;">مباراة #${m.id}</div>
                     <div class="teams-row">
-                        <div class="team">
-                            <img src="${h.logo}" loading="lazy">
-                            <span>${h.name}</span>
-                        </div>
+                        <div class="team"><img src="${h.logo}"><span>${h.name}</span></div>
                         <div class="score-area">
                             <input type="number" class="h-in score-input" min="0" value="${m.homeScore !== null ? m.homeScore : ''}">
                             <span class="vs">VS</span>
                             <input type="number" class="a-in score-input" min="0" value="${m.awayScore !== null ? m.awayScore : ''}">
                         </div>
-                        <div class="team">
-                            <img src="${a.logo}" loading="lazy">
-                            <span>${a.name}</span>
-                        </div>
+                        <div class="team"><img src="${a.logo}"><span>${a.name}</span></div>
                     </div>
                 </div>`;
             });
@@ -636,13 +635,11 @@
                 }
             });
 
-            saveDb();
-            calcStats();
-            renderMyMatches();
+            SyncEngine.save(); // بمجرد الحفظ ستتحدث النتائج والترتيب لدى الجميع
             
-            const btn = document.querySelector('.btn-primary');
+            const btn = document.getElementById('save-btn');
             const txt = btn.innerText;
-            btn.innerText = "تم حفظ النتائج بنجاح ✅";
+            btn.innerText = "تم الحفظ بنجاح ✅";
             btn.style.background = "linear-gradient(135deg, #00c853, #00e676)";
             setTimeout(() => { btn.innerText = txt; btn.style.background = ""; }, 2000);
         }
@@ -652,14 +649,6 @@
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             event.target.classList.add('active');
             document.getElementById(id + '-section').classList.add('active');
-        }
-
-        function saveDb() {
-            localStorage.setItem('superleague_v4', JSON.stringify({
-                teamsStats: state.teamsStats,
-                fixtures: state.fixtures,
-                drawDone: state.drawDone
-            }));
         }
 
         window.onload = init;
