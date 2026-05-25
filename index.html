@@ -3,574 +3,657 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السوبر ليغ | المنصة الذكية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+    <title>السوبر ليغ | المنصة الرسمية للبطولة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* الألوان العصرية والهوية البصرية */
+        /* ================= المتغيرات والهوية المستقبلية ================= */
         :root {
-            --bg-main: #030305;
-            --bg-card: rgba(12, 12, 18, 0.7);
-            --primary: #ff0055;
-            --secondary: #00f0ff;
-            --text-main: #ffffff;
-            --text-muted: #8b8b99;
+            --bg-base: #020205;
+            --bg-glass: rgba(12, 12, 20, 0.55);
+            --bg-glass-hover: rgba(20, 20, 35, 0.75);
+            --primary-cyan: #00f0ff;
+            --primary-blue: #0044ff;
+            --accent-magenta: #ff0055;
+            --admin-gold: #ffb800;
+            --text-light: #ffffff;
+            --text-muted: #8a8d9e;
             --border-glass: rgba(255, 255, 255, 0.05);
-            --blur: blur(20px);
+            --border-glass-strong: rgba(255, 255, 255, 0.1);
+            --neon-glow: 0 0 15px rgba(0, 240, 255, 0.3), 0 0 30px rgba(0, 240, 255, 0.1);
+            --transition-fast: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-
+        
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
+            background-color: var(--bg-base);
+            color: var(--text-light);
             min-height: 100vh;
+            /* خلفية ديناميكية حديثة */
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 0, 85, 0.03) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.03) 0%, transparent 40%);
+                radial-gradient(circle at 10% 10%, rgba(0, 68, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(255, 0, 85, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 60%);
             background-attachment: fixed;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ================== شاشة التسجيل التفاعلية ================== */
-        #auth-screen {
-            position: fixed; inset: 0;
-            background: rgba(3, 3, 5, 0.95);
-            backdrop-filter: var(--blur);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 10000; overflow-y: auto; padding: 20px;
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: #1a1d36; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-cyan); }
+
+        /* ================= تأثيرات الزجاج العامة ================= */
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass-strong);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
-        .auth-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            border-radius: 24px;
-            padding: 40px; width: 100%; max-width: 800px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        /* ================= شاشة الدخول ================= */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(2, 2, 5, 0.92); backdrop-filter: blur(25px);
+            display: flex; flex-direction: column; align-items: center; padding: 60px 20px;
+            overflow-y: auto;
         }
 
-        .title-glow {
-            text-align: center; font-size: 2.5rem; font-weight: 900; margin-bottom: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .brand-title {
+            font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 5px;
+            background: linear-gradient(to right, #fff, var(--primary-cyan));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
+            letter-spacing: -1px;
+        }
+        .brand-subtitle {
+            color: var(--text-muted); font-size: 1.2rem; font-weight: 600; margin-bottom: 50px;
+            text-transform: uppercase; letter-spacing: 2px;
         }
 
-        .custom-input {
-            width: 100%; background: rgba(0,0,0,0.5); border: 2px solid var(--border-glass);
-            color: white; padding: 18px 20px; border-radius: 16px; font-size: 1.1rem;
-            text-align: center; outline: none; transition: 0.3s; margin-bottom: 30px;
+        .players-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px; width: 100%; max-width: 1200px;
         }
-        .custom-input:focus { border-color: var(--secondary); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
 
-        .clubs-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px; margin-bottom: 30px; max-height: 350px; overflow-y: auto;
-            padding-right: 10px;
+        .player-card {
+            background: var(--bg-glass); border: 1px solid var(--border-glass);
+            border-radius: 20px; padding: 30px 15px; text-align: center;
+            cursor: pointer; transition: var(--transition-smooth);
+            position: relative; overflow: hidden;
         }
+        .player-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at top, rgba(255,255,255,0.1), transparent);
+            opacity: 0; transition: var(--transition-smooth); pointer-events: none;
+        }
+        .player-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary-cyan);
+            box-shadow: var(--neon-glow);
+            background: var(--bg-glass-hover);
+        }
+        .player-card:hover::after { opacity: 1; }
         
-        .clubs-grid::-webkit-scrollbar { width: 6px; }
-        .clubs-grid::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+        .admin-card { border-color: rgba(255, 184, 0, 0.3); }
+        .admin-card:hover { border-color: var(--admin-gold); box-shadow: 0 0 25px rgba(255, 184, 0, 0.25); }
 
-        .club-option {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass);
-            border-radius: 16px; padding: 15px; text-align: center; cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .player-logo { width: 70px; height: 70px; object-fit: contain; margin-bottom: 18px; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5)); transition: var(--transition-smooth); }
+        .player-card:hover .player-logo { transform: scale(1.1); }
+        .player-name { font-size: 1.15rem; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+        .player-club { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-top: 4px; }
+        .admin-badge {
+            background: linear-gradient(90deg, #ffb800, #ff8a00); color: #000;
+            font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 900;
+            display: inline-block; margin-top: 15px; box-shadow: 0 4px 10px rgba(255, 184, 0, 0.3);
         }
 
-        .club-option img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; transition: 0.3s; }
-        .club-option span { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
-
-        .club-option:hover { background: rgba(255,255,255,0.05); transform: translateY(-5px); }
-        .club-option.selected {
-            background: rgba(0, 240, 255, 0.1); border-color: var(--secondary);
-            box-shadow: 0 10px 20px rgba(0, 240, 255, 0.2); transform: scale(1.05);
-        }
-        .club-option.selected img { filter: drop-shadow(0 0 10px var(--secondary)); }
-        .club-option.selected span { color: white; }
-
-        .btn-start {
-            width: 100%; background: linear-gradient(135deg, var(--primary), #b3003c);
-            color: white; border: none; padding: 18px; border-radius: 16px;
-            font-size: 1.2rem; font-weight: 900; cursor: pointer; transition: 0.3s;
-        }
-        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(255, 0, 85, 0.4); }
-
-        /* ================== الواجهة الرئيسية ================== */
+        /* ================= النظام الرئيسي ================= */
         #main-app { display: none; }
 
         header {
-            background: rgba(5, 5, 8, 0.8); backdrop-filter: var(--blur);
-            border-bottom: 1px solid var(--border-glass); padding: 15px 0; position: sticky; top: 0; z-index: 100;
+            background: rgba(2, 2, 5, 0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-glass-strong);
+            position: sticky; top: 0; z-index: 100; padding: 15px 0;
         }
-
         .nav-container {
-            max-width: 1400px; margin: 0 auto; padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+            max-width: 1500px; margin: 0 auto; padding: 0 25px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
         }
+        
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .user-profile img { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5)); }
+        .user-profile .name { font-weight: 900; font-size: 1.1rem; color: #fff; display: block; }
+        .user-profile .role { font-size: 0.8rem; color: var(--primary-cyan); font-weight: 800; display: block; text-transform: uppercase; letter-spacing: 1px;}
 
-        .brand-logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; }
-        .brand-logo span { color: var(--primary); }
-
-        .tabs { display: flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 12px; }
+        .tabs-container {
+            display: flex; gap: 8px; background: rgba(0,0,0,0.4); padding: 5px;
+            border-radius: 14px; border: 1px solid var(--border-glass);
+        }
         .tab-btn {
-            background: transparent; color: var(--text-muted); border: none; padding: 10px 20px;
-            border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            background: transparent; color: var(--text-muted); border: none; padding: 10px 24px;
+            border-radius: 10px; font-weight: 800; cursor: pointer; transition: var(--transition-fast);
+            font-size: 0.95rem; position: relative; overflow: hidden;
         }
-        .tab-btn.active { background: rgba(255,255,255,0.1); color: white; }
+        .tab-btn:hover { color: #fff; }
+        .tab-btn.active { background: rgba(255,255,255,0.08); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        #admin-tab { display: none; color: var(--admin-gold); }
+        #admin-tab.active { background: rgba(255, 184, 0, 0.1); box-shadow: inset 0 0 0 1px var(--admin-gold); }
 
-        .content-wrapper { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
-        .view-section { display: none; animation: fadeIn 0.4s; }
+        .content-wrapper { max-width: 1500px; margin: 40px auto; padding: 0 25px; }
+        .view-section { display: none; opacity: 0; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .view-section.active { display: block; }
 
-        /* ================== اللوحة الشخصية ================== */
-        .dashboard-layout { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= جدول الترتيب ================= */
+        .table-container { border-radius: 24px; overflow: hidden; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: center; min-width: 900px; }
+        th { background: rgba(0,0,0,0.5); padding: 20px 15px; color: var(--text-muted); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 18px 15px; font-weight: 700; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.02); transition: var(--transition-fast); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
         
-        .profile-card {
-            background: linear-gradient(180deg, rgba(20,20,30,0.8) 0%, rgba(10,10,15,0.9) 100%);
-            border: 1px solid var(--border-glass); border-radius: 24px; padding: 40px 20px;
-            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); height: fit-content;
-        }
-        .profile-card img { width: 140px; height: 140px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
-        .profile-name { font-size: 1.8rem; font-weight: 900; }
-        .profile-club { color: var(--secondary); font-weight: 700; margin-bottom: 20px; font-size: 1.1rem; }
+        tr.qualified-boundary td { border-bottom: 2px dashed rgba(0, 240, 255, 0.3) !important; }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-item { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.02); }
-        .stat-item span { display: block; font-size: 0.8rem; color: var(--text-muted); }
-        .stat-item strong { font-size: 1.5rem; }
+        .status-badge { font-size: 0.75rem; padding: 5px 12px; border-radius: 8px; font-weight: 900; letter-spacing: 0.5px;}
+        .badge-qual { background: rgba(0, 240, 255, 0.1); color: var(--primary-cyan); border: 1px solid rgba(0, 240, 255, 0.2); }
+        .badge-out { background: rgba(255, 0, 85, 0.1); color: var(--accent-magenta); border: 1px solid rgba(255, 0, 85, 0.2); }
 
-        .fixtures-list { display: flex; flex-direction: column; gap: 15px; }
-        .fixture-card {
-            background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;
-            padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+        .team-info { display: flex; align-items: center; gap: 15px; text-align: right; }
+        .team-info img { width: 38px; height: 38px; object-fit: contain; }
+        .team-info .name { font-weight: 900; color: #fff; font-size: 1.05rem; }
+        .team-info .club { font-size: 0.8rem; color: var(--text-muted); }
+
+        .pts-col { color: var(--primary-cyan); font-size: 1.25rem; font-weight: 900; background: rgba(0, 240, 255, 0.02); }
+
+        /* ================= قسم الإدارة والمباريات ================= */
+        .admin-header {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+            padding: 25px 30px; border-radius: 20px; margin-bottom: 30px;
+            border-right: 4px solid var(--admin-gold);
         }
-        .fixture-card:hover { transform: translateX(-5px); border-color: rgba(255,255,255,0.1); }
         
-        .match-info { display: flex; align-items: center; gap: 15px; }
-        .match-info img { width: 45px; height: 45px; object-fit: contain; }
-        .match-info .vs { color: var(--primary); font-weight: 900; font-size: 0.9rem; }
+        .custom-select {
+            background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 25px; border-radius: 12px; font-size: 1.05rem; font-weight: 800;
+            outline: none; cursor: pointer; transition: var(--transition-fast); appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: left 20px top 50%; background-size: 12px auto;
+        }
+        .custom-select:focus { border-color: var(--admin-gold); box-shadow: 0 0 15px rgba(255, 184, 0, 0.15); }
+
+        .matches-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
         
-        .ai-upload-btn {
-            background: rgba(0, 240, 255, 0.1); color: var(--secondary); border: 1px solid var(--secondary);
-            padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; gap: 8px;
+        .match-card {
+            border-radius: 20px; padding: 25px; display: flex; flex-direction: column; gap: 15px;
+            transition: var(--transition-fast);
         }
-        .ai-upload-btn:hover { background: var(--secondary); color: black; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
-        .score-badge { background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 10px; font-size: 1.4rem; font-weight: 900; letter-spacing: 3px; }
-
-        /* ================== نافذة الذكاء الاصطناعي (AI Scanner) ================== */
-        #ai-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 10001;
-        }
-        .ai-scanner-box {
-            background: #0a0a0f; border: 1px solid var(--secondary); border-radius: 24px;
-            width: 90%; max-width: 500px; padding: 30px; text-align: center; position: relative; overflow: hidden;
-        }
-        .image-preview-container {
-            width: 100%; height: 200px; background: #000; border-radius: 16px; margin: 20px 0;
-            position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
-        }
-        .image-preview-container img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
+        .match-card:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); }
         
-        .scan-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-            background: var(--secondary); box-shadow: 0 0 15px 5px rgba(0, 240, 255, 0.5);
-            display: none; animation: scanAnim 2s infinite linear;
+        .teams-row { display: flex; justify-content: space-between; align-items: center; }
+        .team { display: flex; flex-direction: column; align-items: center; width: 35%; text-align: center; gap: 10px; }
+        .team img { width: 55px; height: 55px; object-fit: contain; }
+        .team span { font-weight: 800; font-size: 0.9rem; color: #fff; }
+        
+        .score-area { display: flex; justify-content: center; align-items: center; gap: 10px; width: 30%; }
+        .score-input {
+            width: 55px; height: 55px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--primary-cyan); font-size: 1.6rem; font-weight: 900; text-align: center; border-radius: 12px;
+            transition: var(--transition-fast);
         }
-        @keyframes scanAnim {
-            0% { top: 0; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
+        .score-input:focus { border-color: var(--primary-cyan); outline: none; box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.2); }
+        .vs { color: var(--text-muted); font-weight: 900; font-size: 0.9rem; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), #002288); color: white;
+            border: none; padding: 20px; border-radius: 16px; font-size: 1.15rem; font-weight: 900;
+            cursor: pointer; width: 100%; margin-top: 30px; transition: var(--transition-fast);
+            box-shadow: 0 10px 25px rgba(0, 68, 255, 0.3); text-transform: uppercase; letter-spacing: 1px;
         }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0, 68, 255, 0.5); }
+        .btn-primary:active { transform: translateY(0); }
 
-        .ai-status { color: var(--secondary); font-weight: 700; margin-top: 15px; min-height: 24px; }
-
-        /* تعديل النتيجة المستخرجة قبل التأكيد */
-        .editable-score-container {
-            display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px;
+        /* ================= شاشة مبارياتي ================= */
+        .my-matches-wrapper { display: flex; flex-direction: column; gap: 15px; max-width: 900px; margin: 0 auto; }
+        .my-match-item {
+            padding: 25px 30px; display: flex; justify-content: space-between; align-items: center;
+            border-radius: 20px; transition: var(--transition-fast);
         }
-        .edit-score-input {
-            width: 60px; height: 50px; background: rgba(255,255,255,0.1); border: 2px solid var(--secondary);
-            color: white; font-size: 1.5rem; font-weight: 900; text-align: center; border-radius: 12px; outline: none;
+        .my-match-item:hover { background: rgba(255,255,255,0.03); transform: scale(1.01); }
+        
+        .match-meta { display: flex; flex-direction: column; gap: 8px; }
+        .round-label { background: rgba(255,255,255,0.05); padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; color: #fff; font-weight: 900; text-align: center;}
+        
+        .score-box {
+            background: rgba(0,0,0,0.6); padding: 12px 30px; border-radius: 14px;
+            font-size: 1.8rem; font-weight: 900; letter-spacing: 4px; color: var(--primary-cyan);
+            border: 1px solid rgba(0,240,255,0.2); box-shadow: inset 0 0 15px rgba(0,240,255,0.05);
         }
+        .score-box.pending { color: var(--text-muted); font-size: 1rem; font-weight: 700; letter-spacing: 0; border-style: dashed; background: transparent; box-shadow: none; }
 
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 20px; background: var(--bg-card); border: 1px solid var(--border-glass); }
-        table { width: 100%; border-collapse: collapse; text-align: center; min-width: 700px; }
-        th { background: rgba(0,0,0,0.6); padding: 20px; color: var(--text-muted); font-size: 0.9rem; }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.02); font-weight: 700; }
-        tr:hover td { background: rgba(255,255,255,0.03); }
-        .team-align { display: flex; align-items: center; gap: 15px; text-align: right; }
-        .team-align img { width: 30px; height: 30px; object-fit: contain; }
-
-        @media (max-width: 1024px) { .dashboard-layout { grid-template-columns: 1fr; } .profile-card { order: -1; } }
         @media (max-width: 768px) {
-            .auth-container { padding: 30px 20px; }
-            .clubs-grid { grid-template-columns: repeat(3, 1fr); }
-            .nav-container { justify-content: center; flex-direction: column; }
-            .fixture-card { flex-direction: column; gap: 15px; text-align: center; }
-            .match-info { flex-direction: column; }
+            .nav-container { flex-direction: column; justify-content: center; gap: 15px; padding: 15px; }
+            .matches-grid { grid-template-columns: 1fr; }
+            .my-match-item { flex-direction: column; gap: 25px; text-align: center; }
+            .brand-title { font-size: 2.8rem; }
         }
-        @media (max-width: 480px) { .clubs-grid { grid-template-columns: repeat(2, 1fr); } }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="auth-container">
-            <div class="title-glow">السوبر ليغ</div>
-            <input type="text" id="player-name" class="custom-input" placeholder="اكتب اسمك الثنائي هنا..." autocomplete="off">
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 15px; font-weight: 700;">اختر النادي الذي ستمثله</p>
-            <div class="clubs-grid" id="clubs-grid"></div>
-            <button class="btn-start" onclick="startCareer()">بدء المسيرة الاحترافية</button>
-        </div>
+    <div id="login-screen">
+        <div class="brand-title">SUPER LEAGUE</div>
+        <div class="players-grid" id="players-grid"></div>
     </div>
 
     <div id="main-app">
         <header>
             <div class="nav-container">
-                <div class="brand-logo">السوبر <span>ليغ</span></div>
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="switchView('profile')">لوحتي</button>
-                    <button class="tab-btn" onclick="switchView('standings')">الترتيب العام</button>
+                <div class="user-profile">
+                    <img id="nav-logo" src="" alt="">
+                    <div>
+                        <span class="name" id="nav-name"></span>
+                        <span class="role" id="nav-club"></span>
+                    </div>
+                </div>
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab('standings')">الترتيب العام</button>
+                    <button class="tab-btn" onclick="switchTab('my-matches')">مبارياتي</button>
+                    <button class="tab-btn" id="admin-tab" onclick="switchTab('admin')">لوحة التحكم</button>
                 </div>
             </div>
         </header>
 
         <main class="content-wrapper">
-            <section id="profile-view" class="view-section active">
-                <div class="dashboard-layout">
-                    <div class="fixtures-list" id="my-fixtures"></div>
-
-                    <div class="profile-card">
-                        <img id="my-logo" src="" alt="Club">
-                        <div class="profile-name" id="my-name"></div>
-                        <div class="profile-club" id="my-club"></div>
-                        <div class="stats-grid">
-                            <div class="stat-item"><span>المركز</span><strong id="my-rank" style="color:var(--secondary)">-</strong></div>
-                            <div class="stat-item"><span>النقاط</span><strong id="my-pts">-</strong></div>
-                            <div class="stat-item"><span>لعب</span><strong id="my-played">-</strong></div>
-                            <div class="stat-item"><span>الأهداف</span><strong id="my-goals">-</strong></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="standings-view" class="view-section">
-                <div class="table-responsive">
+            <section id="standings-section" class="view-section active">
+                <div class="glass-panel table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>#</th><th style="text-align:right">النادي</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>له</th><th>عليه</th><th>+/-</th><th>نقاط</th>
+                                <th>#</th>
+                                <th style="text-align:right">اللاعب / النادي</th>
+                                <th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>له</th><th>عليه</th><th>الفارق</th>
+                                <th class="pts-col">نقاط</th>
+                                <th>الحالة</th>
                             </tr>
                         </thead>
                         <tbody id="standings-body"></tbody>
                     </table>
                 </div>
             </section>
+
+            <section id="my-matches-section" class="view-section">
+                <div class="my-matches-wrapper" id="my-matches-container"></div>
+            </section>
+
+            <section id="admin-section" class="view-section">
+                <div class="glass-panel admin-header">
+                    <div>
+                        <h2 style="color: var(--admin-gold); font-weight: 900; font-size: 1.8rem; margin-bottom: 5px;">غرفة التحكم الرئيسية</h2>
+                        <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem;">إدخال وتحديث نتائج الجولات بشكل رسمي.</p>
+                    </div>
+                    <select class="custom-select" id="round-select" onchange="loadAdminRound()"></select>
+                </div>
+
+                <div id="draw-section" style="margin-bottom:25px;"></div>
+
+                <div class="matches-grid" id="admin-matches-container"></div>
+                <button class="btn-primary" onclick="saveRoundResults()">حفظ واعتماد النتائج</button>
+            </section>
+
         </main>
     </div>
 
-    <div id="ai-modal">
-        <div class="ai-scanner-box">
-            <h3 style="color: white; margin-bottom: 10px;">القارئ الذكي (AI OCR)</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">ارفع سكرين شوت المباراة وسيقوم النظام باستخراج النتيجة الحقيقية من الصورة.</p>
-            
-            <input type="file" id="match-image" accept="image/*" style="display: none;" onchange="previewAndScanImage(event)">
-            
-            <div class="image-preview-container" onclick="document.getElementById('match-image').click()" style="cursor: pointer; border: 2px dashed rgba(255,255,255,0.2);">
-                <span id="upload-placeholder" style="color: rgba(255,255,255,0.5);">+ اضغط لاختيار الصورة</span>
-                <img id="preview-img" src="">
-                <div class="scan-line" id="scan-line"></div>
-            </div>
-
-            <div class="ai-status" id="ai-status">بانتظار الصورة...</div>
-            
-            <div id="editable-score-area" style="display: none;">
-                <p style="color: var(--secondary); font-size: 0.8rem; margin-top: 10px;">يمكنك تصحيح النتيجة يدوياً إذا كانت الصورة غير واضحة للذكاء الاصطناعي</p>
-                <div class="editable-score-container">
-                    <input type="number" id="ai-home-score" class="edit-score-input">
-                    <span style="font-size: 2rem; font-weight: bold; color: var(--text-muted);">-</span>
-                    <input type="number" id="ai-away-score" class="edit-score-input">
-                </div>
-            </div>
-            
-            <div id="ai-actions" style="display: none; margin-top: 20px; gap: 10px; justify-content: center;">
-                <button onclick="confirmAiScore()" style="background: var(--secondary); color: black; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">تأكيد واعتماد النتيجة</button>
-                <button onclick="closeAiModal()" style="background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 8px; cursor: pointer;">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        const clubsData = [
-            { id: 1, name: "ريال مدريد", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
-            { id: 2, name: "برشلونة", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" },
-            { id: 3, name: "مانشستر سيتي", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
-            { id: 4, name: "بايرن ميونخ", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg" },
-            { id: 5, name: "ليفربول", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
-            { id: 6, name: "أرسنال", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
-            { id: 7, name: "إنتر ميلان", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" },
-            { id: 8, name: "يوفنتوس", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Juventus_FC_-_pictogram_black_%28Italy%2C_2017%29.svg" },
-            { id: 9, name: "باريس سان جيرمان", logo: "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg" },
-            { id: 10, name: "أتلتيكو مدريد", logo: "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg" },
-            { id: 11, name: "ميلان", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg" },
-            { id: 12, name: "تشيلسي", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" }
+        // البيانات الرسمية
+        const officialPlayers = [
+            { id: 1, name: "محمد مجيد", club: "النصر السعودي", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/5bac387e-a96a-4133-923f-4bf011d5613e.png", isAdmin: true },
+            { id: 2, name: "عمر محمد", club: "ريال مدريد", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg", isAdmin: false },
+            { id: 3, name: "ليث اسامه", club: "بايرن ميونخ", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg", isAdmin: false },
+            { id: 4, name: "صهيب خالد", club: "إنتر ميلان", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg", isAdmin: false },
+            { id: 5, name: "اسامه محمد", club: "برشلونة", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg", isAdmin: false },
+            { id: 6, name: "احمد علي", club: "أتلتيكو مدريد", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/4cb14d7a-0611-4d1f-881f-328adfd6c919.png", isAdmin: false },
+            { id: 7, name: "يوسف نسيم", club: "توتنهام", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg", isAdmin: false },
+            { id: 8, name: "محمد خالد", club: "تشيلسي", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg", isAdmin: false },
+            { id: 9, name: "يزن فلاح", club: "مانشستر سيتي", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg", isAdmin: false },
+            { id: 10, name: "طه محمد", club: "الهلال السعودي", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/2c6c181b-5092-413a-86d3-e81d9fa0e335.png", isAdmin: false },
+            { id: 11, name: "يونس شلال", club: "إي سي ميلان", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg", isAdmin: false },
+            { id: 12, name: "ياسين شلال", club: "أرسنال", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg", isAdmin: false },
+            { id: 13, name: "أيمن صالح", club: "باريس سان جيرمان", logo: "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg", isAdmin: false },
+            { id: 14, name: "همام احمد", club: "ليفربول", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg", isAdmin: false },
+            { id: 15, name: "محمد طه", club: "روما", logo: "https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg", isAdmin: false },
+            { id: 16, name: "خطاب احمد", club: "كومو", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/3f302b65-1266-4b34-8007-3ed20dabf39e.png", isAdmin: false }
         ];
 
         let state = {
-            player: null,
-            teamsInfo: [],
+            currentUser: null,
+            teamsStats: [],
             fixtures: [],
-            currentProcessingMatchId: null
+            drawDone: false
         };
 
-        function initApp() {
-            const grid = document.getElementById('clubs-grid');
-            grid.innerHTML = clubsData.map(club => `
-                <div class="club-option" data-id="${club.id}" onclick="selectClub(${club.id}, this)">
-                    <img src="${club.logo}">
-                    <span>${club.name}</span>
+        function init() {
+            // رسم الكروت
+            document.getElementById('players-grid').innerHTML = officialPlayers.map(p => `
+                <div class="player-card ${p.isAdmin ? 'admin-card' : ''}" onclick="login(${p.id})">
+                    <img src="${p.logo}" class="player-logo" loading="lazy">
+                    <div class="player-name">${p.name}</div>
+                    <div class="player-club">${p.club}</div>
+                    ${p.isAdmin ? '<div class="admin-badge">منظم البطولة</div>' : ''}
                 </div>
             `).join('');
 
-            const savedData = localStorage.getItem('super_league_real_ai');
-            if (savedData) {
-                state = JSON.parse(savedData);
-                showMainApp();
+            const localData = localStorage.getItem('superleague_v4');
+            if (localData) {
+                let parsed = JSON.parse(localData);
+                state.teamsStats = parsed.teamsStats || [];
+                state.fixtures = parsed.fixtures || [];
+                state.drawDone = parsed.drawDone || false;
+            } else {
+                state.teamsStats = officialPlayers.map(p => ({ id: p.id, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 }));
+                state.fixtures = [];
+                state.drawDone = false;
+                saveDb();
             }
         }
 
-        let selectedClubId = null;
-        function selectClub(id, element) {
-            document.querySelectorAll('.club-option').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedClubId = id;
+        // خوارزمية إنشاء الـ 8 جولات السويسرية
+        function generateFixtures() {
+            state.teamsStats = officialPlayers.map(p => ({ id: p.id, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 }));
+            let teamIds = officialPlayers.map(p => p.id);
+            let n = teamIds.length;
+            let mId = 1;
+
+            for (let r = 0; r < 8; r++) {
+                for (let i = 0; i < n/2; i++) {
+                    let home = teamIds[i], away = teamIds[n - 1 - i];
+                    if (r % 2 === 1 && i === 0) {
+                        state.fixtures.push({ id: mId++, round: r+1, homeId: away, awayId: home, homeScore: null, awayScore: null });
+                    } else {
+                        state.fixtures.push({ id: mId++, round: r+1, homeId: home, awayId: away, homeScore: null, awayScore: null });
+                    }
+                }
+                teamIds.splice(1, 0, teamIds.pop());
+            }
         }
 
-        function startCareer() {
-            const name = document.getElementById('player-name').value.trim();
-            if (!name || !selectedClubId) { alert("يرجى كتابة اسمك واختيار ناديك."); return; }
-
-            const myClub = clubsData.find(c => c.id === selectedClubId);
-            state.player = { name: name, clubId: selectedClubId, clubName: myClub.name, logo: myClub.logo };
-            
-            state.teamsInfo = clubsData.map(c => ({
-                id: c.id, name: c.id === selectedClubId ? name : "الكمبيوتر", team: c.name, logo: c.logo,
-                p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0
-            }));
+        function officialDraw() {
+            if (state.drawDone) return;
 
             state.fixtures = [];
-            let matchId = 1;
-            clubsData.forEach(c => {
-                if (c.id !== selectedClubId) {
-                    state.fixtures.push({ id: matchId++, homeId: selectedClubId, awayId: c.id, homeScore: null, awayScore: null });
-                }
-            });
+            generateFixtures();
+            state.drawDone = true;
+            saveDb();
 
-            saveData();
-            showMainApp();
+            loadAdminRound();
+            calcStats();
+            renderMyMatches();
+
+            document.getElementById('draw-section').innerHTML = '';
+
+            alert('تم إجراء القرعة الرسمية واعتماد جدول البطولة بنجاح ✅');
         }
 
-        function showMainApp() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            calculateStandings();
-            renderProfile();
-        }
-
-        function calculateStandings() {
-            state.teamsInfo.forEach(t => { t.p=0; t.w=0; t.d=0; t.l=0; t.gf=0; t.ga=0; t.gd=0; t.pts=0; });
-
-            state.fixtures.forEach(m => {
-                if (m.homeScore !== null && m.awayScore !== null) {
-                    let home = state.teamsInfo.find(t => t.id === m.homeId);
-                    let away = state.teamsInfo.find(t => t.id === m.awayId);
-                    
-                    home.p++; away.p++; home.gf += m.homeScore; away.gf += m.awayScore;
-                    home.ga += m.awayScore; away.ga += m.homeScore;
-
-                    if (m.homeScore > m.awayScore) { home.w++; home.pts+=3; away.l++; }
-                    else if (m.homeScore < m.awayScore) { away.w++; away.pts+=3; home.l++; }
-                    else { home.d++; away.d++; home.pts+=1; away.pts+=1; }
-                }
-            });
-
-            state.teamsInfo.forEach(t => {
-                if(t.id !== state.player.clubId && t.p < 5) {
-                    t.p += 5; t.w += 2; t.d += 1; t.l += 2; t.pts += 7; t.gf += 8; t.ga += 6;
-                }
-                t.gd = t.gf - t.ga;
-            });
-
-            state.teamsInfo.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
-            renderStandings();
-        }
-
-        function renderProfile() {
-            const me = state.teamsInfo.find(t => t.id === state.player.clubId);
-            const rank = state.teamsInfo.findIndex(t => t.id === state.player.clubId) + 1;
-
-            document.getElementById('my-name').innerText = state.player.name;
-            document.getElementById('my-club').innerText = state.player.clubName;
-            document.getElementById('my-logo').src = state.player.logo;
-            document.getElementById('my-rank').innerText = rank;
-            document.getElementById('my-pts').innerText = me.pts;
-            document.getElementById('my-played').innerText = me.p;
-            document.getElementById('my-goals').innerText = me.gf;
-
-            document.getElementById('my-fixtures').innerHTML = state.fixtures.map(m => {
-                const opp = state.teamsInfo.find(t => t.id === m.awayId);
-                const isPlayed = m.homeScore !== null;
-                
-                let actionHTML = isPlayed 
-                    ? `<div class="score-badge">${m.homeScore} - ${m.awayScore}</div>`
-                    : `<button class="ai-upload-btn" onclick="openAiModal(${m.id})">📸 استخراج النتيجة (AI)</button>`;
-
-                return `
-                    <div class="fixture-card">
-                        <div class="match-info">
-                            <img src="${state.player.logo}"> <span class="vs">ضد</span> <img src="${opp.logo}">
-                            <span style="font-weight:700;">${opp.team}</span>
-                        </div>
-                        <div>${actionHTML}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderStandings() {
-            document.getElementById('standings-body').innerHTML = state.teamsInfo.map((t, idx) => `
-                <tr>
-                    <td style="color:var(--text-muted)">${idx + 1}</td>
-                    <td><div class="team-align"><img src="${t.logo}"><span style="${t.id === state.player.clubId ? 'color:var(--secondary)' : ''}">${t.team}</span></div></td>
-                    <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td style="direction:ltr">${t.gd > 0 ? '+'+t.gd : t.gd}</td>
-                    <td style="color:white; font-size:1.1rem;">${t.pts}</td>
-                </tr>
-            `).join('');
-        }
-
-        /* ---------------- محرك الذكاء الاصطناعي الحقيقي Tesseract.js ---------------- */
-        function openAiModal(matchId) {
-            state.currentProcessingMatchId = matchId;
-            document.getElementById('ai-modal').style.display = 'flex';
-            resetAiModal();
-        }
-
-        function closeAiModal() {
-            document.getElementById('ai-modal').style.display = 'none';
-            document.getElementById('match-image').value = '';
-        }
-
-        function resetAiModal() {
-            document.getElementById('upload-placeholder').style.display = 'block';
-            document.getElementById('preview-img').style.display = 'none';
-            document.getElementById('scan-line').style.display = 'none';
-            document.getElementById('ai-actions').style.display = 'none';
-            document.getElementById('editable-score-area').style.display = 'none';
-            document.getElementById('ai-status').innerText = 'بانتظار الصورة...';
-            document.getElementById('ai-status').style.color = 'var(--text-muted)';
-        }
-
-        function previewAndScanImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('upload-placeholder').style.display = 'none';
-                    const img = document.getElementById('preview-img');
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    
-                    // تمرير الصورة لمحرك الذكاء الاصطناعي الفعلي
-                    performRealAiOCR(file);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function performRealAiOCR(imageFile) {
-            const scanLine = document.getElementById('scan-line');
-            const statusText = document.getElementById('ai-status');
+        function login(id) {
+            const user = officialPlayers.find(p => p.id === id);
+            state.currentUser = user;
             
-            scanLine.style.display = 'block';
-            statusText.style.color = 'var(--secondary)';
-            statusText.innerText = 'يتم الآن تحليل الصورة وقراءة الأرقام الحقيقية... قد يستغرق ثوانٍ معدودة';
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            
+            document.getElementById('nav-logo').src = user.logo;
+            document.getElementById('nav-name').innerText = user.name;
+            document.getElementById('nav-club').innerText = user.club;
 
-            try {
-                // إنشاء وتحميل محرك Tesseract (استخدمنا الإنجليزية لأن الأرقام والـ - تقرأ بشكل أفضل)
-                const worker = await Tesseract.createWorker('eng');
-                const ret = await worker.recognize(imageFile);
-                const textExtracted = ret.data.text;
-                await worker.terminate();
-                
-                scanLine.style.display = 'none';
-                
-                // البحث الذكي عن نمط النتيجة في النص المستخرج (مثال: 3-0 أو 3 - 0)
-                const scoreRegex = /(\d+)\s*[-:]\s*(\d+)/;
-                const match = textExtracted.match(scoreRegex);
-
-                document.getElementById('editable-score-area').style.display = 'block';
-                document.getElementById('ai-actions').style.display = 'flex';
-
-                if (match) {
-                    statusText.innerText = 'تم استخراج النتيجة بنجاح! تأكد منها قبل الاعتماد.';
-                    statusText.style.color = '#00ff88';
-                    
-                    // وضع الأرقام المستخرجة في الحقول
-                    document.getElementById('ai-home-score').value = parseInt(match[1]);
-                    document.getElementById('ai-away-score').value = parseInt(match[2]);
-                } else {
-                    statusText.innerText = 'لم يتمكن الذكاء الاصطناعي من قراءة النتيجة بوضوح. يرجى إدخالها يدوياً أدناه.';
-                    statusText.style.color = 'orange';
-                    document.getElementById('ai-home-score').value = '';
-                    document.getElementById('ai-away-score').value = '';
-                }
-                
-            } catch (error) {
-                scanLine.style.display = 'none';
-                statusText.innerText = 'حدث خطأ أثناء الاتصال بمحرك الذكاء الاصطناعي. أدخل النتيجة يدوياً.';
-                document.getElementById('editable-score-area').style.display = 'block';
-                document.getElementById('ai-actions').style.display = 'flex';
+            if (user.isAdmin) {
+                document.getElementById('admin-tab').style.display = 'block';
+                setupAdmin();
             }
+            calcStats();
+            renderMyMatches();
         }
 
-        function confirmAiScore() {
-            const homeScore = parseInt(document.getElementById('ai-home-score').value);
-            const awayScore = parseInt(document.getElementById('ai-away-score').value);
+        function calcStats() {
+            state.teamsStats.forEach(t => { t.p=0; t.w=0; t.d=0; t.l=0; t.gf=0; t.ga=0; t.gd=0; t.pts=0; });
 
-            if (isNaN(homeScore) || isNaN(awayScore)) {
-                alert("يرجى التأكد من وجود أرقام صحيحة في كلا الصندوقين.");
+            if (!state.drawDone) {
+                renderTable();
                 return;
             }
 
-            const match = state.fixtures.find(m => m.id === state.currentProcessingMatchId);
-            if (match) {
-                match.homeScore = homeScore;
-                match.awayScore = awayScore;
-                saveData();
-                calculateStandings();
-                renderProfile();
-                closeAiModal();
+            state.fixtures.forEach(m => {
+                if (m.homeScore !== null && m.awayScore !== null) {
+                    let h = state.teamsStats.find(t => t.id === m.homeId);
+                    let a = state.teamsStats.find(t => t.id === m.awayId);
+                    
+                    h.p++; a.p++; h.gf += m.homeScore; a.gf += m.awayScore;
+                    h.ga += m.awayScore; a.ga += m.homeScore;
+
+                    if (m.homeScore > m.awayScore) { h.w++; h.pts+=3; a.l++; }
+                    else if (m.homeScore < m.awayScore) { a.w++; a.pts+=3; h.l++; }
+                    else { h.d++; a.d++; h.pts+=1; a.pts+=1; }
+                }
+            });
+
+            state.teamsStats.forEach(t => { t.gd = t.gf - t.ga; });
+            
+            // الفرز المتقدم
+            state.teamsStats.sort((a, b) => {
+                if (b.pts !== a.pts) return b.pts - a.pts;
+                if (b.gf !== a.gf) return b.gf - a.gf;
+                if (a.ga !== b.ga) return a.ga - b.ga;
+                
+                let dm = state.fixtures.find(m => (m.homeId === a.id && m.awayId === b.id) || (m.homeId === b.id && m.awayId === a.id));
+                if (dm && dm.homeScore !== null) {
+                    let sA = dm.homeId === a.id ? dm.homeScore : dm.awayScore;
+                    let sB = dm.homeId === b.id ? dm.homeScore : dm.awayScore;
+                    return sB - sA;
+                }
+                return 0;
+            });
+            renderTable();
+        }
+
+        function renderTable() {
+            if (!state.drawDone) {
+                document.getElementById('standings-body').innerHTML = `
+                    <tr>
+                        <td colspan="11" style="padding:40px; color:var(--text-muted); font-weight:900;">
+                            لم يتم إجراء القرعة الرسمية بعد
+                        </td>
+                    </tr>
+                `;
+                return;
             }
+
+            let html = '';
+            state.teamsStats.forEach((t, i) => {
+                const p = officialPlayers.find(x => x.id === t.id);
+                const isMe = state.currentUser && state.currentUser.id === p.id;
+                const r = i + 1;
+                const isQ = r <= 8;
+                const badge = isQ ? '<span class="status-badge badge-qual">ربع النهائي</span>' : '<span class="status-badge badge-out">إقصاء</span>';
+                const rowClass = r === 8 ? 'qualified-boundary' : '';
+                const bg = isMe ? 'background: rgba(0, 240, 255, 0.08); border-right: 4px solid var(--primary-cyan);' : '';
+
+                html += `
+                <tr class="${rowClass}" style="${bg}">
+                    <td style="color:${r<=4 ? 'var(--admin-gold)' : 'var(--text-muted)'}; font-weight:900;">${r}</td>
+                    <td>
+                        <div class="team-info">
+                            <img src="${p.logo}" loading="lazy">
+                            <div>
+                                <span class="name" style="${isMe ? 'color:var(--primary-cyan)' : ''}">${p.name}</span>
+                                <span class="club">${p.club}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td>
+                    <td style="color:#00e676">${t.gf}</td><td style="color:#ff1744">${t.ga}</td>
+                    <td style="direction:ltr; color:${t.gd > 0 ? '#00f0ff' : t.gd < 0 ? '#ff0055' : 'inherit'}">${t.gd > 0 ? '+'+t.gd : t.gd}</td>
+                    <td class="pts-col">${t.pts}</td>
+                    <td>${badge}</td>
+                </tr>`;
+            });
+            document.getElementById('standings-body').innerHTML = html;
         }
 
-        function switchView(viewId) {
+        function renderMyMatches() {
+            if (!state.drawDone || state.fixtures.length === 0) {
+                document.getElementById('my-matches-container').innerHTML = `
+                    <div class="glass-panel my-match-item" style="justify-content:center;">
+                        لم يتم إجراء القرعة الرسمية بعد
+                    </div>
+                `;
+                return;
+            }
+
+            const matches = state.fixtures.filter(m => m.homeId === state.currentUser.id || m.awayId === state.currentUser.id);
+            let html = '';
+            
+            matches.forEach(m => {
+                const isH = m.homeId === state.currentUser.id;
+                const opp = officialPlayers.find(p => p.id === (isH ? m.awayId : m.homeId));
+                let ms = isH ? m.homeScore : m.awayScore;
+                let os = isH ? m.awayScore : m.homeScore;
+                
+                let scoreHtml = (ms !== null) 
+                    ? `<div class="score-box">${ms} - ${os}</div>` 
+                    : `<div class="score-box pending">لم تُلعب</div>`;
+
+                html += `
+                <div class="glass-panel my-match-item">
+                    <div class="match-meta">
+                        <span class="round-label">الجولة ${m.round}</span>
+                        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">${isH ? 'مضيف (أرضك)' : 'ضيف (خارج أرضك)'}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:30px;">
+                        <div style="text-align:center; width:80px;">
+                            <img src="${state.currentUser.logo}" style="width:50px; height:50px; object-fit:contain;">
+                            <div style="font-weight:900; font-size:0.85rem; margin-top:5px; color:var(--primary-cyan)">أنت</div>
+                        </div>
+                        ${scoreHtml}
+                        <div style="text-align:center; width:80px;">
+                            <img src="${opp.logo}" style="width:50px; height:50px; object-fit:contain;">
+                            <div style="font-weight:900; font-size:0.85rem; margin-top:5px; color:#fff;">${opp.name}</div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('my-matches-container').innerHTML = html;
+        }
+
+        function setupAdmin() {
+            const sel = document.getElementById('round-select');
+            sel.innerHTML = '';
+            for(let i=1; i<=8; i++) sel.innerHTML += `<option value="${i}">استعراض مباريات الجولة ${i}</option>`;
+            
+            const drawSection = document.getElementById('draw-section');
+
+            if (!state.drawDone) {
+                drawSection.innerHTML = `
+                    <button class="btn-primary" onclick="officialDraw()">
+                        إجراء القرعة الرسمية
+                    </button>
+                `;
+            } else {
+                drawSection.innerHTML = '';
+            }
+
+            loadAdminRound();
+        }
+
+        function loadAdminRound() {
+            if (!state.drawDone) {
+                document.getElementById('admin-matches-container').innerHTML = `
+                    <div class="glass-panel match-card" style="text-align:center;">
+                        لم يتم إجراء القرعة الرسمية بعد
+                    </div>
+                `;
+                return;
+            }
+
+            const r = parseInt(document.getElementById('round-select').value);
+            const matches = state.fixtures.filter(m => m.round === r);
+            let html = '';
+            
+            matches.forEach(m => {
+                const h = officialPlayers.find(p => p.id === m.homeId);
+                const a = officialPlayers.find(p => p.id === m.awayId);
+                
+                html += `
+                <div class="glass-panel match-card" data-id="${m.id}">
+                    <div style="text-align:center; color:var(--text-muted); font-weight:800; font-size:0.8rem;">رقم المباراة #${m.id}</div>
+                    <div class="teams-row">
+                        <div class="team">
+                            <img src="${h.logo}" loading="lazy">
+                            <span>${h.name}</span>
+                        </div>
+                        <div class="score-area">
+                            <input type="number" class="h-in score-input" min="0" value="${m.homeScore !== null ? m.homeScore : ''}">
+                            <span class="vs">VS</span>
+                            <input type="number" class="a-in score-input" min="0" value="${m.awayScore !== null ? m.awayScore : ''}">
+                        </div>
+                        <div class="team">
+                            <img src="${a.logo}" loading="lazy">
+                            <span>${a.name}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('admin-matches-container').innerHTML = html;
+        }
+
+        function saveRoundResults() {
+            if (!state.drawDone) return;
+
+            document.querySelectorAll('.match-card').forEach(c => {
+                const id = parseInt(c.getAttribute('data-id'));
+                const hVal = c.querySelector('.h-in')?.value;
+                const aVal = c.querySelector('.a-in')?.value;
+                
+                let m = state.fixtures.find(x => x.id === id);
+                if (m && hVal !== '' && aVal !== '') {
+                    m.homeScore = parseInt(hVal); m.awayScore = parseInt(aVal);
+                } else if (m) {
+                    m.homeScore = null; m.awayScore = null;
+                }
+            });
+
+            saveDb();
+            calcStats();
+            renderMyMatches();
+            
+            const btn = document.querySelector('.btn-primary');
+            const txt = btn.innerText;
+            btn.innerText = "تم حفظ النتائج بنجاح ✅";
+            btn.style.background = "linear-gradient(135deg, #00c853, #00e676)";
+            setTimeout(() => { btn.innerText = txt; btn.style.background = ""; }, 2000);
+        }
+
+        function switchTab(id) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             event.target.classList.add('active');
-            document.getElementById(viewId + '-view').classList.add('active');
+            document.getElementById(id + '-section').classList.add('active');
         }
 
-        function saveData() { localStorage.setItem('super_league_real_ai', JSON.stringify(state)); }
+        function saveDb() {
+            localStorage.setItem('superleague_v4', JSON.stringify({
+                teamsStats: state.teamsStats,
+                fixtures: state.fixtures,
+                drawDone: state.drawDone
+            }));
+        }
 
-        window.onload = initApp;
+        window.onload = init;
     </script>
 </body>
 </html>
