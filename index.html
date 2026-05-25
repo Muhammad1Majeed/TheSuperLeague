@@ -362,6 +362,12 @@
                 state.drawDone = false;
                 saveDb();
             }
+
+            // التحقق من وجود تسجيل دخول مسبق
+            const savedUserId = localStorage.getItem('superleague_logged_user');
+            if (savedUserId) {
+                login(parseInt(savedUserId));
+            }
         }
 
         // خوارزمية إنشاء الـ 8 جولات السويسرية
@@ -404,6 +410,9 @@
         function login(id) {
             const user = officialPlayers.find(p => p.id === id);
             state.currentUser = user;
+            
+            // التعديل الجديد: حفظ ID اللاعب في المتصفح بشكل دائم
+            localStorage.setItem('superleague_logged_user', id);
             
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
