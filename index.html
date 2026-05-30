@@ -418,6 +418,7 @@
             font-size: 0.9rem;
             font-weight: 800;
             letter-spacing: 0.5px;
+            text-align: center;
         }
 
         .team img {
@@ -452,6 +453,84 @@
             text-transform: uppercase;
         }
 
+        /* Knockout Specific Styles */
+        .ko-stage-title {
+            color: var(--admin-gold);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin: 40px 0 20px 0;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .ko-match-card {
+            background: linear-gradient(145deg, rgba(15, 18, 25, 0.8), rgba(10, 12, 18, 0.9));
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .ko-legs-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ko-leg-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ko-leg-title {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .ko-leg-score {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .ko-agg-box {
+            border-color: rgba(0, 240, 255, 0.3);
+            background: rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+        }
+        
+        .ko-agg-box .ko-leg-title { color: var(--primary-glow); }
+
+        .ko-winner-text {
+            text-align: center;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .tba-team {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+
         /* Admin Controls */
         .score-input {
             width: 60px;
@@ -473,6 +552,8 @@
             box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.2);
             background: rgba(0,0,0,0.8);
         }
+        
+        .ko-input { width: 50px; height: 40px; font-size: 1.2rem; }
 
         .vs-badge {
             color: var(--text-muted);
@@ -525,10 +606,21 @@
             box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
         }
 
+        .btn-gold {
+            color: var(--admin-gold);
+            border-color: var(--admin-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15), inset 0 0 20px rgba(255, 215, 0, 0.05);
+        }
+        .btn-gold:hover {
+            background: var(--admin-gold);
+            color: #000;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+
         .system-status {
             position: fixed;
             bottom: 20px;
-            left: 20px; /* Moved to left for better balance */
+            left: 20px;
             background: rgba(5, 7, 10, 0.8);
             border: 1px solid rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
@@ -587,6 +679,7 @@
         <div class="tabs-container">
             <button class="tab-btn active" onclick="switchTab('standings', this)">الترتيب العام</button>
             <button class="tab-btn" onclick="switchTab('my-matches', this)">مبارياتي</button>
+            <button class="tab-btn" onclick="switchTab('knockout', this)">الأدوار الإقصائية</button>
             <button id="admin-tab" class="tab-btn" onclick="switchTab('admin', this)" style="display:none; color:var(--admin-gold); border-color:transparent;">إدارة البطولة</button>
         </div>
 
@@ -609,7 +702,7 @@
                         </tr>
                     </thead>
                     <tbody id="standings-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -619,16 +712,39 @@
             <div id="my-matches-container"></div>
         </div>
 
+        <!-- قسم الأدوار الإقصائية الجديد -->
+        <div id="knockout-section" class="view-section">
+            <h2 class="section-title">الأدوار الإقصائية (نظام ذهاب وإياب)</h2>
+            <div id="knockout-container">
+                <div class="glass-panel" style="text-align:center; color:var(--text-muted);">بانتظار تأهل الأندية وبدء الأدوار الإقصائية من قبل المنظم...</div>
+            </div>
+        </div>
+
         <div id="admin-section" class="view-section">
             <div id="draw-section" style="margin-bottom: 25px;"></div>
             
             <div class="glass-panel">
                 <h2 class="section-title">إدخال النتائج</h2>
-                <select id="round-select" class="modern-select" onchange="loadAdminRound()"></select>
                 
-                <div id="admin-matches-container" style="display:flex; flex-direction:column; gap:15px; margin-bottom:25px;"></div>
-                
-                <button id="save-btn" class="btn-primary" onclick="saveRoundResults()">حفظ وتحديث النتائج المباشرة</button>
+                <select id="admin-mode-select" class="modern-select" onchange="toggleAdminMode()" style="border-color: var(--admin-gold); color: var(--admin-gold);">
+                    <option value="league">إدارة دور المجموعات (الدوري)</option>
+                    <option value="knockout">إدارة الأدوار الإقصائية (Knockout)</option>
+                </select>
+
+                <!-- إدارة الدوري -->
+                <div id="admin-league-panel">
+                    <select id="round-select" class="modern-select" onchange="loadAdminRound()"></select>
+                    <div id="admin-matches-container" style="display:flex; flex-direction:column; gap:15px; margin-bottom:25px;"></div>
+                    <button id="save-btn" class="btn-primary" onclick="saveRoundResults()">حفظ وتحديث النتائج المباشرة</button>
+                </div>
+
+                <!-- إدارة الإقصائيات -->
+                <div id="admin-knockout-panel" style="display:none;">
+                    <div id="ko-generate-section" style="margin-bottom: 25px;"></div>
+                    <div id="admin-ko-matches-container" style="display:flex; flex-direction:column; gap:15px; margin-bottom:25px;"></div>
+                    <button id="save-ko-btn" class="btn-primary btn-gold" onclick="saveKnockoutResults()" style="display:none;">حفظ وتحديث نتائج الإقصائيات</button>
+                </div>
+
             </div>
         </div>
 
@@ -654,7 +770,7 @@
             { id: 6, name: "احمد علي", club: "أتلتيكو مدريد", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/4cb14d7a-0611-4d1f-881f-328adfd6c919.png", isAdmin: false },
             { id: 7, name: "يوسف نسيم", club: "توتنهام", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg", isAdmin: false },
             { id: 8, name: "محمد خالد", club: "تشيلسي", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg", isAdmin: false },
-            { id: 9, name: "عباس محمد", club: "مانشستر سيتي", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg", isAdmin: false },
+            { id: 9, name: "يزن فل", club: "مانشستر سيتي", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg", isAdmin: false },
             { id: 10, name: "طه محمد", club: "الهلال السعودي", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/2c6c181b-5092-413a-86d3-e81d9fa0e335.png", isAdmin: false },
             { id: 11, name: "يونس شلال", club: "إي سي ميلان", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg", isAdmin: false },
             { id: 12, name: "مصطفى احمد", club: "أرسنال", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg", isAdmin: false },
@@ -664,7 +780,7 @@
             { id: 16, name: "خطاب احمد", club: "كومو", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/3f302b65-1266-4b34-8007-3ed20dabf39e.png", isAdmin: false }
         ];
 
-        let state = { currentUser: null, teamsStats: [], fixtures: [], drawDone: false };
+        let state = { currentUser: null, teamsStats: [], fixtures: [], drawDone: false, knockout: { generated: false, matches: [] } };
         let isOnline = false;
         let db = null;
 
@@ -680,7 +796,12 @@
 
         const SyncEngine = {
             save: function() {
-                const data = { teamsStats: state.teamsStats, fixtures: state.fixtures, drawDone: state.drawDone };
+                const data = { 
+                    teamsStats: state.teamsStats, 
+                    fixtures: state.fixtures, 
+                    drawDone: state.drawDone,
+                    knockout: state.knockout
+                };
                 if (isOnline) db.ref('superleague_live').set(data);
                 else { localStorage.setItem('sl_db', JSON.stringify(data)); refreshUI(data); }
             },
@@ -722,10 +843,12 @@
                 state.teamsStats = data.teamsStats || [];
                 state.fixtures = data.fixtures || [];
                 state.drawDone = data.drawDone || false;
+                state.knockout = data.knockout || { generated: false, matches: [] };
             } else {
                 state.teamsStats = officialPlayers.map(p => ({ id: p.id, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 }));
                 state.fixtures = [];
                 state.drawDone = false;
+                state.knockout = { generated: false, matches: [] };
                 if (!isOnline) SyncEngine.save();
             }
 
@@ -734,6 +857,8 @@
                 renderMyMatches();
             }
             calcStats();
+            processKnockoutTree(); // حساب الفائزين وانتقالهم
+            renderKnockoutStage();
         }
 
         function login(id, isAuto = false) {
@@ -761,7 +886,7 @@
                 document.getElementById('admin-tab').style.display = 'none';
             }
             
-            refreshUI({ teamsStats: state.teamsStats, fixtures: state.fixtures, drawDone: state.drawDone });
+            refreshUI({ teamsStats: state.teamsStats, fixtures: state.fixtures, drawDone: state.drawDone, knockout: state.knockout });
         }
 
         function logout() {
@@ -915,6 +1040,174 @@
             cont.innerHTML = html;
         }
 
+        // ======================= نظام الأدوار الإقصائية ======================= //
+        
+        function generateKnockoutStage() {
+            if (state.knockout.generated) return;
+            
+            // جلب أول 8 متأهلين بالترتيب
+            const top8 = state.teamsStats.slice(0, 8);
+            if(top8.length < 8) {
+                alert('يجب أن يكون هناك 8 فرق على الأقل.');
+                return;
+            }
+
+            // المواجهات الرسمية: 1vs8, 2vs7, 3vs6, 4vs5
+            state.knockout.matches = [
+                // الربع النهائي
+                { id: 'qf1', stage: 'quarter', title: 'الربع النهائي 1', t1: top8[0].id, t2: top8[7].id, l1s1:'', l1s2:'', l2s1:'', l2s2:'' },
+                { id: 'qf2', stage: 'quarter', title: 'الربع النهائي 2', t1: top8[3].id, t2: top8[4].id, l1s1:'', l1s2:'', l2s1:'', l2s2:'' },
+                { id: 'qf3', stage: 'quarter', title: 'الربع النهائي 3', t1: top8[1].id, t2: top8[6].id, l1s1:'', l1s2:'', l2s1:'', l2s2:'' },
+                { id: 'qf4', stage: 'quarter', title: 'الربع النهائي 4', t1: top8[2].id, t2: top8[5].id, l1s1:'', l1s2:'', l2s1:'', l2s2:'' },
+                // النصف النهائي
+                { id: 'sf1', stage: 'semi', title: 'النصف النهائي 1', t1: null, t2: null, l1s1:'', l1s2:'', l2s1:'', l2s2:'' },
+                { id: 'sf2', stage: 'semi', title: 'النصف النهائي 2', t1: null, t2: null, l1s1:'', l1s2:'', l2s1:'', l2s2:'' },
+                // النهائي
+                { id: 'final', stage: 'final', title: 'النهائي الكبير', t1: null, t2: null, l1s1:'', l1s2:'', l2s1:'', l2s2:'' }
+            ];
+
+            state.knockout.generated = true;
+            SyncEngine.save();
+            alert('تم توليد الأدوار الإقصائية بنجاح!');
+            loadAdminKnockoutMatches();
+        }
+
+        // دالة لحساب الفائز في مجموع المباراتين
+        function getKnockoutWinner(match) {
+            if (match.l1s1==='' || match.l1s2==='' || match.l2s1==='' || match.l2s2==='') return null;
+            let a = parseInt(match.l1s1) + parseInt(match.l2s1);
+            let b = parseInt(match.l1s2) + parseInt(match.l2s2);
+            if (a > b) return match.t1;
+            if (b > a) return match.t2;
+            return 'tie'; // حالة التعادل تتطلب حسم من المنظم أو إضافة نتيجة الترجيح للإياب
+        }
+
+        function processKnockoutTree() {
+            if (!state.knockout || !state.knockout.generated) return;
+            const ko = state.knockout.matches;
+
+            // تحديث نصف النهائي
+            const qf1W = getKnockoutWinner(ko.find(m => m.id === 'qf1'));
+            const qf2W = getKnockoutWinner(ko.find(m => m.id === 'qf2'));
+            const qf3W = getKnockoutWinner(ko.find(m => m.id === 'qf3'));
+            const qf4W = getKnockoutWinner(ko.find(m => m.id === 'qf4'));
+
+            let sf1 = ko.find(m => m.id === 'sf1');
+            sf1.t1 = qf1W !== 'tie' ? qf1W : null;
+            sf1.t2 = qf2W !== 'tie' ? qf2W : null;
+
+            let sf2 = ko.find(m => m.id === 'sf2');
+            sf2.t1 = qf3W !== 'tie' ? qf3W : null;
+            sf2.t2 = qf4W !== 'tie' ? qf4W : null;
+
+            // تحديث النهائي
+            const sf1W = getKnockoutWinner(sf1);
+            const sf2W = getKnockoutWinner(sf2);
+
+            let finalMatch = ko.find(m => m.id === 'final');
+            finalMatch.t1 = sf1W !== 'tie' ? sf1W : null;
+            finalMatch.t2 = sf2W !== 'tie' ? sf2W : null;
+        }
+
+        function renderKnockoutStage() {
+            const cont = document.getElementById('knockout-container');
+            if (!state.knockout || !state.knockout.generated) {
+                cont.innerHTML = `<div class="glass-panel" style="text-align:center; color:var(--text-muted);">بانتظار تأهل الأندية وبدء الأدوار الإقصائية من قبل المنظم...</div>`;
+                return;
+            }
+
+            let html = '';
+            const stages = [
+                { id: 'quarter', name: 'ربع النهائي (ذهاب وإياب)' },
+                { id: 'semi', name: 'نصف النهائي (ذهاب وإياب)' },
+                { id: 'final', name: 'النهائي الكبير (ذهاب وإياب)' }
+            ];
+
+            stages.forEach(stageInfo => {
+                const stageMatches = state.knockout.matches.filter(m => m.stage === stageInfo.id);
+                if (stageMatches.length > 0) {
+                    html += `<div class="ko-stage-title">${stageInfo.name}</div>`;
+                    
+                    stageMatches.forEach(m => {
+                        let t1 = m.t1 ? officialPlayers.find(p => p.id === m.t1) : { name: "يحدد لاحقاً", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/c8b3ec40-e298-4663-9562-b13c38ce1058.png", club: "TBA" };
+                        let t2 = m.t2 ? officialPlayers.find(p => p.id === m.t2) : { name: "يحدد لاحقاً", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/c8b3ec40-e298-4663-9562-b13c38ce1058.png", club: "TBA" };
+                        
+                        let isT1Ready = m.t1 != null;
+                        let isT2Ready = m.t2 != null;
+
+                        let l1s1 = m.l1s1 !== '' ? m.l1s1 : '-';
+                        let l1s2 = m.l1s2 !== '' ? m.l1s2 : '-';
+                        let l2s1 = m.l2s1 !== '' ? m.l2s1 : '-';
+                        let l2s2 = m.l2s2 !== '' ? m.l2s2 : '-';
+
+                        let total1 = (m.l1s1 !== '' && m.l2s1 !== '') ? parseInt(m.l1s1) + parseInt(m.l2s1) : '-';
+                        let total2 = (m.l1s2 !== '' && m.l2s2 !== '') ? parseInt(m.l1s2) + parseInt(m.l2s2) : '-';
+
+                        let winnerText = '';
+                        let w = getKnockoutWinner(m);
+                        if(w && w !== 'tie') {
+                            let wTeam = officialPlayers.find(p => p.id === w);
+                            winnerText = `<div class="ko-winner-text">المتأهل: ${wTeam.name}</div>`;
+                        } else if (w === 'tie') {
+                            winnerText = `<div class="ko-winner-text" style="color:var(--admin-gold)">تعادل في المجموع! بانتظار حسم المنظم (ركلات ترجيح)</div>`;
+                        }
+
+                        html += `
+                        <div class="ko-match-card">
+                            <div style="text-align:center; color:var(--primary-glow); font-size:0.8rem; font-weight:800; margin-bottom:10px;">${m.title}</div>
+                            
+                            <div class="teams-row">
+                                <div class="team ${!isT1Ready ? 'tba-team' : ''}">
+                                    <img src="${t1.logo}">
+                                    <span>${t1.name}</span>
+                                </div>
+                                
+                                <div style="width: 50%;">
+                                    <div class="ko-legs-container">
+                                        <div class="ko-leg-box">
+                                            <span class="ko-leg-title">الذهاب</span>
+                                            <span class="ko-leg-score">${l1s1} - ${l1s2}</span>
+                                        </div>
+                                        <div class="ko-leg-box">
+                                            <span class="ko-leg-title">الإياب</span>
+                                            <span class="ko-leg-score">${l2s1} - ${l2s2}</span>
+                                        </div>
+                                        <div class="ko-leg-box ko-agg-box">
+                                            <span class="ko-leg-title">الإجمالي</span>
+                                            <span class="ko-leg-score">${total1} - ${total2}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team ${!isT2Ready ? 'tba-team' : ''}">
+                                    <img src="${t2.logo}">
+                                    <span>${t2.name}</span>
+                                </div>
+                            </div>
+                            ${winnerText}
+                        </div>`;
+                    });
+                }
+            });
+
+            cont.innerHTML = html;
+        }
+
+        // ======================= قسم الإدارة (Admin) ======================= //
+
+        function toggleAdminMode() {
+            const mode = document.getElementById('admin-mode-select').value;
+            if (mode === 'league') {
+                document.getElementById('admin-league-panel').style.display = 'block';
+                document.getElementById('admin-knockout-panel').style.display = 'none';
+                loadAdminRound();
+            } else {
+                document.getElementById('admin-league-panel').style.display = 'none';
+                document.getElementById('admin-knockout-panel').style.display = 'block';
+                loadAdminKnockoutMatches();
+            }
+        }
+
         function setupAdmin() {
             const sel = document.getElementById('round-select');
             if (sel.innerHTML === '') {
@@ -923,12 +1216,21 @@
             
             const drawSec = document.getElementById('draw-section');
             if (!state.drawDone) {
-                drawSec.innerHTML = `<button class="btn-primary" onclick="officialDraw()">إجراء القرعة الرسمية</button>`;
+                drawSec.innerHTML = `<button class="btn-primary" onclick="officialDraw()">إجراء القرعة الرسمية للدوري</button>`;
                 drawSec.style.display = 'block';
             } else {
                 drawSec.style.display = 'none';
             }
+
+            const koGenSec = document.getElementById('ko-generate-section');
+            if (state.drawDone && (!state.knockout || !state.knockout.generated)) {
+                koGenSec.innerHTML = `<button class="btn-primary btn-gold" onclick="generateKnockoutStage()">توليد جدول الأدوار الإقصائية (Top 8)</button>`;
+            } else {
+                koGenSec.innerHTML = '';
+            }
+
             loadAdminRound();
+            loadAdminKnockoutMatches();
         }
 
         function loadAdminRound() {
@@ -955,6 +1257,53 @@
                             <input type="number" class="a-in score-input" min="0" value="${aVal}">
                         </div>
                         <div class="team" style="width:35%;"><img src="${a.logo}" style="width:40px;height:40px;"><span>${a.name}</span></div>
+                    </div>
+                </div>`;
+            });
+            cont.innerHTML = html;
+        }
+
+        function loadAdminKnockoutMatches() {
+            const cont = document.getElementById('admin-ko-matches-container');
+            const btn = document.getElementById('save-ko-btn');
+            
+            if (!state.knockout || !state.knockout.generated) { 
+                cont.innerHTML = '<div style="color:var(--text-muted); text-align:center;">يجب توليد الأدوار الإقصائية أولاً</div>'; 
+                btn.style.display = 'none';
+                return; 
+            }
+
+            btn.style.display = 'block';
+            let html = '';
+            
+            state.knockout.matches.forEach(m => {
+                let t1 = m.t1 ? officialPlayers.find(p => p.id === m.t1) : { name: "يحدد لاحقاً", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/c8b3ec40-e298-4663-9562-b13c38ce1058.png" };
+                let t2 = m.t2 ? officialPlayers.find(p => p.id === m.t2) : { name: "يحدد لاحقاً", logo: "https://i.supaimg.com/4d83dc19-3e52-40fd-ba22-d0e725844112/c8b3ec40-e298-4663-9562-b13c38ce1058.png" };
+                
+                let isReady = m.t1 != null && m.t2 != null;
+
+                html += `
+                <div class="match-card ko-admin-card" data-ko-id="${m.id}" style="${!isReady ? 'opacity:0.5; pointer-events:none;' : ''}">
+                    <div style="text-align:center; color:var(--admin-gold); font-size:0.8rem; font-weight:800; margin-bottom:10px;">${m.title}</div>
+                    <div class="teams-row">
+                        <div class="team" style="width:25%;"><img src="${t1.logo}" style="width:40px;height:40px;"><span style="font-size:0.7rem;">${t1.name}</span></div>
+                        
+                        <div style="width:50%; display:flex; flex-direction:column; gap:10px; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:5px;">
+                                <span style="font-size:0.7rem; color:var(--text-muted);">الذهاب:</span>
+                                <input type="number" class="ko-l1s1 score-input ko-input" value="${m.l1s1}">
+                                <span style="color:var(--text-muted)">-</span>
+                                <input type="number" class="ko-l1s2 score-input ko-input" value="${m.l1s2}">
+                            </div>
+                            <div style="display:flex; align-items:center; gap:5px;">
+                                <span style="font-size:0.7rem; color:var(--text-muted);">الإياب:</span>
+                                <input type="number" class="ko-l2s1 score-input ko-input" value="${m.l2s1}">
+                                <span style="color:var(--text-muted)">-</span>
+                                <input type="number" class="ko-l2s2 score-input ko-input" value="${m.l2s2}">
+                            </div>
+                        </div>
+
+                        <div class="team" style="width:25%;"><img src="${t2.logo}" style="width:40px;height:40px;"><span style="font-size:0.7rem;">${t2.name}</span></div>
                     </div>
                 </div>`;
             });
@@ -998,6 +1347,42 @@
                 btn.style.borderColor = "";
                 btn.style.boxShadow = ""; 
             }, 2500);
+        }
+
+        function saveKnockoutResults() {
+            if (!state.knockout || !state.knockout.generated) return;
+
+            document.querySelectorAll('.ko-admin-card').forEach(c => {
+                const koId = c.getAttribute('data-ko-id');
+                const l1s1 = c.querySelector('.ko-l1s1').value;
+                const l1s2 = c.querySelector('.ko-l1s2').value;
+                const l2s1 = c.querySelector('.ko-l2s1').value;
+                const l2s2 = c.querySelector('.ko-l2s2').value;
+                
+                let m = state.knockout.matches.find(x => x.id === koId);
+                if (m) {
+                    m.l1s1 = l1s1; m.l1s2 = l1s2;
+                    m.l2s1 = l2s1; m.l2s2 = l2s2;
+                }
+            });
+
+            processKnockoutTree(); // تحديث المتأهلين تلقائياً
+            SyncEngine.save(); 
+            
+            const btn = document.getElementById('save-ko-btn');
+            const txt = btn.innerText;
+            btn.innerText = "تم حفظ الإقصائيات بنجاح";
+            btn.style.background = "var(--admin-gold)";
+            btn.style.color = "#000";
+            
+            setTimeout(() => { 
+                btn.innerText = txt; 
+                btn.style.background = ""; 
+                btn.style.color = "var(--admin-gold)";
+            }, 2500);
+
+            // تحديث العرض في لوحة الإدارة لإظهار المتأهلين الجدد في نصف النهائي والنهائي
+            loadAdminKnockoutMatches();
         }
 
         window.onload = init;
