@@ -123,6 +123,8 @@
 
         .section-title { color: #fff; font-weight: 900; font-size: 1.5rem; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; }
         .section-title::before { content: ''; display: block; width: 5px; height: 25px; background: var(--primary-glow); border-radius: 4px; }
+        
+        .qualified-boundary td { border-bottom: 2px dashed rgba(212, 175, 55, 0.3); }
 
         /* Matches UI */
         .match-card { background: rgba(30, 8, 15, 0.7); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 15px; transition: 0.3s; }
@@ -133,7 +135,7 @@
         .score-area { display: flex; flex-direction: column; align-items: center; width: 40%; }
         .score-box { font-size: 2rem; font-weight: 900; color: #fff; letter-spacing: 5px; }
         
-        /* Knockout Bracket Tree (EA Sports Style) */
+        /* Knockout Bracket Tree */
         .bracket-wrapper { overflow-x: auto; padding: 20px 0; margin-top: 20px; }
         .bracket-container { display: flex; justify-content: center; min-width: 1100px; gap: 15px; }
         .bracket-column { display: flex; flex-direction: column; justify-content: space-around; gap: 15px; width: 170px; }
@@ -201,7 +203,7 @@
     <div class="tabs-container">
         <button class="tab-btn active" onclick="switchTab('standings', this)">ترتيب المجموعات</button>
         <button class="tab-btn" onclick="switchTab('my-matches', this)">مبارياتي</button>
-        <button class="tab-btn" onclick="switchTab('best-thirds', this)">أفضل الثوالث</button>
+        <button class="tab-btn" onclick="switchTab('best-thirds', this)">الثوالث وأفضل رابع</button>
         <button class="tab-btn" onclick="switchTab('knockout', this)">مسار الأدوار الإقصائية</button>
         <button id="admin-tab" class="tab-btn" onclick="switchTab('admin', this)" style="display:none; color:var(--admin-gold); border-color:var(--admin-gold);">إدارة المونديال</button>
     </div>
@@ -269,7 +271,6 @@
         appId: "1:302472752303:web:667c3971350051c583785a"
     };
 
-    // القائمة المحدثة (إزالة كلمة المدرب والتركيز على اسم اللاعب والمنتخب)
     const officialPlayers = [
         { id: 1, name: "محمد مجيد", team: "البرتغال", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg", isAdmin: true },
         { id: 2, name: "يونس شلال", team: "إنكلترا", logo: "https://upload.wikimedia.org/wikipedia/en/b/be/Flag_of_England.svg", isAdmin: false },
@@ -362,7 +363,7 @@
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         document.getElementById('nav-logo').src = user.logo;
-        document.getElementById('nav-name').innerText = user.name; // عرض اسم اللاعب
+        document.getElementById('nav-name').innerText = user.name;
         document.getElementById('nav-team').innerText = user.team;
 
         if (user.isAdmin) document.getElementById('admin-tab').style.display = 'block';
@@ -378,7 +379,6 @@
         btn.classList.add('active'); document.getElementById(id + '-section').classList.add('active');
     }
 
-    // بناء المجموعات
     function officialDraw() {
         if (state.drawDone) return;
         state.fixtures = []; state.groupsConfig = { A: [], B: [], C: [], D: [], E: [] };
@@ -408,7 +408,7 @@
 
     function calcStats() {
         state.teamsStats.forEach(t => { t.p=0; t.w=0; t.d=0; t.l=0; t.gf=0; t.ga=0; t.gd=0; t.pts=0; t.qualStatus=''; });
-        if (!state.drawDone) { renderTables([], []); return; }
+        if (!state.drawDone) { renderTables([], [], []); return; }
 
         state.fixtures.forEach(m => {
             if (typeof m.homeScore === 'number' && typeof m.awayScore === 'number') {
@@ -423,7 +423,7 @@
         });
 
         state.teamsStats.forEach(t => { t.gd = t.gf - t.ga; });
-        let bestThirdsPool = [], groupWinners = [];
+        let thirdsPool = [], fourthsPool = [], groupWinners = [];
 
         ['A','B','C','D','E'].forEach(g => {
             let gTeams = state.teamsStats.filter(t => t.group === g);
@@ -435,22 +435,33 @@
             });
             gTeams.forEach((t, i) => {
                 if(i === 0 || i === 1) { t.qualStatus = 'direct'; groupWinners.push({rank: i+1, group: g, team: t}); }
-                if(i === 2) bestThirdsPool.push(t);
+                if(i === 2) thirdsPool.push(t);
+                if(i === 3) fourthsPool.push(t);
             });
         });
 
-        bestThirdsPool.sort((a, b) => {
+        // ترتيب الثوالث (الجميع 5 منتخبات يتأهلون)
+        thirdsPool.sort((a, b) => {
             if (b.pts !== a.pts) return b.pts - a.pts;
             if (b.gd !== a.gd) return b.gd - a.gd; 
             if (b.gf !== a.gf) return b.gf - a.gf;
             return a.id - b.id;
         });
+        thirdsPool.forEach(t => t.qualStatus = 'wildcard');
 
-        bestThirdsPool.forEach((t, i) => { t.qualStatus = (i < 6) ? 'wildcard' : 'out'; });
-        renderTables(groupWinners, bestThirdsPool);
+        // ترتيب أصحاب المركز الرابع (يتأهل فقط أفضل رابع لإكمال الـ 16)
+        fourthsPool.sort((a, b) => {
+            if (b.pts !== a.pts) return b.pts - a.pts;
+            if (b.gd !== a.gd) return b.gd - a.gd; 
+            if (b.gf !== a.gf) return b.gf - a.gf;
+            return a.id - b.id;
+        });
+        fourthsPool.forEach((t, i) => { t.qualStatus = (i === 0) ? 'wildcard-4th' : 'out'; });
+
+        renderTables(groupWinners, thirdsPool, fourthsPool);
     }
 
-    function renderTables(winners, bestThirdsPool) {
+    function renderTables(winners, thirdsPool, fourthsPool) {
         const grpCont = document.getElementById('groups-container');
         const thirdsCont = document.getElementById('best-thirds-container');
 
@@ -475,7 +486,11 @@
                     <tbody>`;
             gTeams.forEach((t, i) => {
                 const p = officialPlayers.find(x => x.id === t.id);
-                let badge = t.qualStatus === 'direct' ? '<span class="status-badge badge-qual">تأهل مباشر</span>' : (t.qualStatus === 'wildcard' ? '<span class="status-badge badge-qual" style="color:var(--success); border-color:var(--success);">أفضل ثالث</span>' : '<span class="status-badge badge-out">خارج</span>');
+                let badge = t.qualStatus === 'direct' ? '<span class="status-badge badge-qual">تأهل مباشر</span>' : 
+                            (t.qualStatus === 'wildcard' ? '<span class="status-badge badge-qual" style="color:var(--success); border-color:var(--success);">أفضل ثالث</span>' : 
+                            (t.qualStatus === 'wildcard-4th' ? '<span class="status-badge badge-qual" style="color:#00e676; border-color:#00e676;">أفضل رابع</span>' : 
+                            '<span class="status-badge badge-out">خارج</span>'));
+                            
                 grpHtml += `<tr><td style="color:var(--primary-glow); font-weight:900;">${i+1}</td>
                     <td><div class="team-info"><img src="${p.logo}"><div><div style="font-weight:900; color:#fff;">${p.name}</div><div style="font-size:0.75rem; color:var(--text-muted);">${p.team}</div></div></div></td>
                     <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td style="color:var(--success)">${t.gf}</td><td style="color:var(--danger)">${t.ga}</td>
@@ -485,20 +500,38 @@
         });
         grpCont.innerHTML = grpHtml;
 
-        let tHtml = `<h2 class="section-title">جدول ترتيب أفضل الثوالث</h2><div class="glass-panel table-responsive"><table>
+        // --- جداول الثوالث وأفضل رابع ---
+        let tHtml = `<h2 class="section-title">جدول ترتيب الثوالث (يتأهل جميع الثوالث - 5 منتخبات)</h2>
+        <div class="glass-panel table-responsive"><table>
             <thead><tr><th>الترتيب</th><th style="text-align:right;">اللاعب / المنتخب</th><th>المجموعة</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>الفارق</th><th>النقاط</th><th>الحالة</th></tr></thead><tbody>`;
         
-        bestThirdsPool.forEach((t, i) => {
+        thirdsPool.forEach((t, i) => {
             const p = officialPlayers.find(x => x.id === t.id);
-            const isQual = i < 6;
-            const badge = isQual ? '<span class="status-badge badge-qual" style="color:var(--success); border-color:var(--success);">تأهل كأفضل 3</span>' : '<span class="status-badge badge-out">إقصاء</span>';
-            tHtml += `<tr class="${i===5 ? 'qualified-boundary' : ''}">
+            const badge = '<span class="status-badge badge-qual" style="color:var(--success); border-color:var(--success);">تأهل كأفضل 3</span>';
+            tHtml += `<tr>
+                <td style="font-weight:900; color:var(--primary-glow);">${i+1}</td>
+                <td><div class="team-info"><img src="${p.logo}"><div><div style="font-weight:900; color:#fff;">${p.name}</div><div style="font-size:0.75rem; color:var(--text-muted);">${p.team}</div></div></div></td>
+                <td style="font-weight:900; color:var(--text-muted)">${t.group}</td>
+                <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td style="direction:ltr; font-weight:900;">${t.gd > 0 ? '+'+t.gd : t.gd}</td><td class="pts-col">${t.pts}</td><td>${badge}</td></tr>`;
+        });
+        tHtml += `</tbody></table></div>`;
+
+        tHtml += `<h2 class="section-title" style="margin-top:40px;">جدول ترتيب أصحاب المركز الرابع (يتأهل أفضل رابع فقط)</h2>
+        <div class="glass-panel table-responsive"><table>
+            <thead><tr><th>الترتيب</th><th style="text-align:right;">اللاعب / المنتخب</th><th>المجموعة</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>الفارق</th><th>النقاط</th><th>الحالة</th></tr></thead><tbody>`;
+        
+        fourthsPool.forEach((t, i) => {
+            const p = officialPlayers.find(x => x.id === t.id);
+            const isQual = (i === 0);
+            const badge = isQual ? '<span class="status-badge badge-qual" style="color:#00e676; border-color:#00e676;">تأهل كأفضل رابع</span>' : '<span class="status-badge badge-out">إقصاء</span>';
+            tHtml += `<tr class="${isQual ? 'qualified-boundary' : ''}">
                 <td style="font-weight:900; color:${isQual ? 'var(--primary-glow)' : 'var(--text-muted)'};">${i+1}</td>
                 <td><div class="team-info"><img src="${p.logo}"><div><div style="font-weight:900; color:#fff;">${p.name}</div><div style="font-size:0.75rem; color:var(--text-muted);">${p.team}</div></div></div></td>
                 <td style="font-weight:900; color:var(--text-muted)">${t.group}</td>
                 <td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td style="direction:ltr; font-weight:900;">${t.gd > 0 ? '+'+t.gd : t.gd}</td><td class="pts-col">${t.pts}</td><td>${badge}</td></tr>`;
         });
         tHtml += `</tbody></table></div>`;
+
         thirdsCont.innerHTML = tHtml;
     }
 
@@ -525,20 +558,18 @@
         cont.innerHTML = html;
     }
 
-    // توليد المسار التلقائي للأدوار الإقصائية (Fixed Automatic Bracket)
+    // توليد المسار التلقائي للأدوار الإقصائية بناءً على (10 مباشر + 5 ثوالث + 1 أفضل رابع)
     function generateAutomaticBracket() {
         let directQual = state.teamsStats.filter(t => t.qualStatus === 'direct');
-        let wildcards = state.teamsStats.filter(t => t.qualStatus === 'wildcard');
+        let thirdQual = state.teamsStats.filter(t => t.qualStatus === 'wildcard');
+        let fourthQual = state.teamsStats.filter(t => t.qualStatus === 'wildcard-4th');
         
-        if (directQual.length + wildcards.length !== 16) {
+        if (directQual.length + thirdQual.length + fourthQual.length !== 16) {
             alert('لم تكتمل المجموعات بعد لتحديد 16 متأهل!'); return;
         }
 
-        // استخراج المتصدرين والثواني
         let getTeam = (rank, grp) => {
-            let t = directQual.find(x => x.group === grp && state.teamsStats.find(y => y.id === x.id).pts > 0); // Need proper mapping
-            // Recalculate rank properly
-            let grpTeams = state.teamsStats.filter(x => x.group === grp).sort((a,b)=> {
+            let grpTeams = state.teamsStats.filter(x => x.group === grp && x.pts > 0).sort((a,b)=> {
                 if (b.pts !== a.pts) return b.pts - a.pts;
                 if (b.gd !== a.gd) return b.gd - a.gd; 
                 return b.gf - a.gf;
@@ -546,11 +577,16 @@
             return grpTeams[rank-1].id;
         };
 
-        // الثوالث مرتبين 1 إلى 6
-        let t = wildcards.sort((a,b)=> {
+        // ترتيب الثوالث ثم دمج أفضل رابع في النهاية لتكوين الـ 6 بطاقات المتبقية
+        let sortedThirds = thirdQual.sort((a,b)=> {
             if (b.pts !== a.pts) return b.pts - a.pts;
             if (b.gd !== a.gd) return b.gd - a.gd; return b.gf - a.gf;
         }).map(x => x.id);
+        
+        let bestFourthId = fourthQual.map(x => x.id);
+        
+        // مصفوفة 't' تحتوي الآن على (5 ثوالث + 1 رابع = 6 منتخبات) 
+        let t = [...sortedThirds, ...bestFourthId];
 
         // تعيين المسار الثابت
         let R16 = [
@@ -559,7 +595,7 @@
             { id: 'r16_3', stage: 'r16', title: 'دور الـ 16 - M3', t1: getTeam(1,'B'), t2: t[1], s1:'', s2:'', p1:'', p2:'' },
             { id: 'r16_4', stage: 'r16', title: 'دور الـ 16 - M4', t1: getTeam(2,'A'), t2: getTeam(2,'D'), s1:'', s2:'', p1:'', p2:'' },
             { id: 'r16_5', stage: 'r16', title: 'دور الـ 16 - M5', t1: getTeam(1,'C'), t2: t[2], s1:'', s2:'', p1:'', p2:'' },
-            { id: 'r16_6', stage: 'r16', title: 'دور الـ 16 - M6', t1: getTeam(2,'E'), t2: t[5], s1:'', s2:'', p1:'', p2:'' }, // T6
+            { id: 'r16_6', stage: 'r16', title: 'دور الـ 16 - M6', t1: getTeam(2,'E'), t2: t[5], s1:'', s2:'', p1:'', p2:'' }, // T6 اصبح الان أفضل رابع
             { id: 'r16_7', stage: 'r16', title: 'دور الـ 16 - M7', t1: getTeam(1,'D'), t2: t[3], s1:'', s2:'', p1:'', p2:'' },
             { id: 'r16_8', stage: 'r16', title: 'دور الـ 16 - M8', t1: getTeam(1,'E'), t2: t[4], s1:'', s2:'', p1:'', p2:'' }
         ];
@@ -616,7 +652,6 @@
         updateNext('sf_1', 'final', 1); updateNext('sf_2', 'final', 2);
     }
 
-    // رسم هيكل البطولة بشكل شجرة احترافية (Bracket)
     function renderKnockoutBracket() {
         const cont = document.getElementById('knockout-container');
         if (!state.knockout || !state.knockout.generated) {
@@ -650,10 +685,10 @@
             </div>`;
         };
 
-        // الـ Bracket المتناظر
         let html = `
         <div class="bracket-wrapper">
             <div class="bracket-container">
+                <!-- النصف الأيمن -->
                 <div class="bracket-column">
                     ${renderMatchBox('r16_1')}${renderMatchBox('r16_2')}${renderMatchBox('r16_3')}${renderMatchBox('r16_4')}
                 </div>
@@ -664,6 +699,7 @@
                     ${renderMatchBox('sf_1')}
                 </div>
                 
+                <!-- النهائي في المنتصف -->
                 <div class="bracket-column center" style="justify-content:center;">
                     <div class="trophy-container">
                         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/2026_FIFA_World_Cup_logo.svg/1200px-2026_FIFA_World_Cup_logo.svg.png" style="width:120px; filter: drop-shadow(0 0 20px rgba(212,175,55,0.8));">
@@ -671,6 +707,7 @@
                     ${renderMatchBox('final')}
                 </div>
                 
+                <!-- النصف الأيسر -->
                 <div class="bracket-column" style="justify-content:center;">
                     ${renderMatchBox('sf_2')}
                 </div>
@@ -685,7 +722,6 @@
         cont.innerHTML = html;
     }
 
-    // -------------------------------- الإدارة -------------------------------- //
     function toggleAdminMode() {
         const mode = document.getElementById('admin-mode-select').value;
         if (mode === 'league') { document.getElementById('admin-league-panel').style.display = 'block'; document.getElementById('admin-knockout-panel').style.display = 'none'; loadAdminRound(); }
