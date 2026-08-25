@@ -1,377 +1,2119 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar" data-theme="dark">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
+<html dir="rtl" lang="ar">
+<head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>الكرة لايف - محمي</title>
 <meta name="referrer" content="no-referrer">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Tajawal:wght@700;800;900&display=swap" rel="stylesheet">
+
+<title>Shabakaty Player</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.13/shaka-player.compiled.js"></script>
+
 <style>
-:root{--primary:#ffc107;--live:#ff1a1a;--bg:#08080a;--card-bg:#141416;--text:#fff;--muted:#8a8a8e}
-*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;min-height:100%;background:var(--bg);font-family:'Cairo','Tajawal',sans-serif;color:var(--text);overflow-x:hidden}
-#login-overlay{position:fixed;inset:0;z-index:100000;background:radial-gradient(800px 600px at 30% -10%, rgba(255,159,51,.15) 0%, transparent 60%),linear-gradient(180deg,#0a0a0e 0%,#050507 100%);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{width:100%;max-width:380px;background:rgba(20,20,22,.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px 26px 26px;text-align:center}
-.login-logo{width:64px;height:64px;margin:0 auto 14px;background:linear-gradient(135deg,#ff9f33,#e67e22);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px}
-.login-title{font-size:22px;font-weight:900;margin:0 0 6px}.login-sub{font-size:13px;color:var(--muted);margin:0 0 24px;line-height:1.6}
-.pass-input{width:100%;height:52px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;color:#fff;font-size:20px;font-weight:800;letter-spacing:6px;text-align:center;font-family:'Cairo';outline:none}
-.login-btn{width:100%;height:50px;background:linear-gradient(180deg,#ff9f33,#e67e22);border:none;border-radius:14px;color:#fff;font-family:Cairo;font-weight:800;font-size:15px;cursor:pointer;margin-top:12px}
-.error-msg{font-size:12px;color:#ff5a5a;background:rgba(255,90,90,.1);border:1px solid rgba(255,90,90,.15);padding:8px 12px;border-radius:10px;margin-top:12px;display:none}
-#main-site{display:none}#main-site.unlocked{display:block}
-.top-header{position:sticky;top:0;z-index:100;background:rgba(8,8,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(128,128,128,.12);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px}.logo-dot{width:10px;height:10px;background:var(--live);border-radius:50%;box-shadow:0 0 12px var(--live)}
-.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(128,128,128,.15);background:rgba(128,128,128,.08);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.main-wrapper{max-width:1200px;margin:0 auto;padding:22px 14px 80px;background:radial-gradient(1000px 500px at 50% -5%,#1c1c24 0%,transparent 60%),#060608}
-.section-block{margin-bottom:32px}.section-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}.section-head h2{font-size:17px;font-weight:800;margin:0}.section-head .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(128,128,128,.25),transparent)}
-.pills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}@media(max-width:700px){.pills-grid{grid-template-columns:1fr}}
-.channel-pill-3d{position:relative;display:flex;width:100%;height:68px;border-radius:16px;overflow:hidden;cursor:pointer;user-select:none;background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 50%,var(--c3) 100%);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 5px 0 var(--cs),0 10px 20px rgba(0,0,0,.45);transform:perspective(900px) rotateX(6deg);transition:.14s}
-.channel-pill-3d::before{content:'';position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,transparent 100%);pointer-events:none;z-index:2}
-.channel-pill-3d:hover{transform:perspective(900px) rotateX(3deg) translateY(-3px) translateZ(12px);filter:brightness(1.08)}
-.pill-euro{--c1:#ff9f33;--c2:#f08a1d;--c3:#e67e22;--cs:#a85c12}.pill-euro-2{--c1:#5d9bff;--c2:#2d6cdf;--c3:#1e3a8a;--cs:#10204d}.pill-eng{--c1:#a56cc1;--c2:#8e44ad;--c3:#6c3483;--cs:#4a2358}.pill-esp{--c1:#ff6b6b;--c2:#e63946;--c3:#c1121f;--cs:#780000}.pill-ita{--c1:#4ea8de;--c2:#1d86c9;--c3:#005a9e;--cs:#003a66}.pill-sau{--c1:#5fcf80;--c2:#2d9a4e;--c3:#1b5e20;--cs:#0f3312}
-.num-box-3d{width:86px;min-width:86px;background:linear-gradient(180deg,#fff 0%,#e9e9e9 100%);display:flex;align-items:center;justify-content:center;z-index:1;border-left:2px solid rgba(0,0,0,.06)}.num-box-3d span{font-size:34px;font-weight:900;color:#111;font-family:'Tajawal'}.num-box-3d.small-code span{font-size:18px;font-family:'Cairo'}
-.label-box-3d{flex:1;display:flex;align-items:center;justify-content:center;padding:0 14px;z-index:1}.label-box-3d span{color:#fff;font-size:21px;font-weight:800;text-shadow:0 2px 4px rgba(0,0,0,.4)}
-#player-view{position:fixed;inset:0;z-index:9999;background:#000;display:none;flex-direction:column}#player-view.visible{display:flex}
-.player-header{height:56px;background:#0f0f11;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;padding:0 12px}
-#back-btn{background:rgba(255,255,255,.08);border:none;color:#fff;width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-#current-channel-name{font-weight:800;font-size:14px;color:#fff}
-.servers-bar{background:#0f0f11;padding:9px 12px;display:flex;gap:7px;overflow-x:auto;border-bottom:1px solid rgba(255,255,255,.06)}
-.server-btn{white-space:nowrap;padding:6px 14px;border-radius:18px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#bbb;cursor:pointer;font-family:Cairo}
-.server-btn.active{background:#fff;color:#000;border-color:#fff}
-#player-container{position:relative;flex:1;width:100%;background:#000;display:flex;justify-content:center;align-items:center;overflow:hidden}
-#video-wrapper{position:relative;width:100%;height:100%}#video{width:100%;height:100%;object-fit:contain;background:#000}
-#loading-spinner{position:absolute;z-index:100;width:44px;height:44px;border:4px solid rgba(255,255,255,.18);border-top-color:#ffc107;border-radius:50%;animation:spin 1s linear infinite;display:none}@keyframes spin{to{transform:rotate(360deg)}}
-#error-overlay{position:absolute;inset:0;z-index:100;background:rgba(0,0,0,.92);color:#fff;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px}
-.controls-overlay{position:absolute;z-index:10;opacity:0;visibility:hidden;pointer-events:none;transition:.3s}.controls-overlay.visible{opacity:1;visibility:visible;pointer-events:auto}
-#bottom-controls-container{bottom:0;left:0;right:0;padding:6px 12px 8px;background:linear-gradient(to top,rgba(0,0,0,.85),transparent)}
-#center-controls{top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:24px}
-.control-button,.center-control-button{background:none;border:none;color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-.control-button i,.control-button svg{width:20px;height:20px}.center-control-button{width:62px;height:62px}.center-control-button i,.center-control-button svg{width:42px;height:42px}
-#seek-backward-center-btn i{transform:scaleX(-1)}
-.progress-bar-container{width:100%;padding:9px 0;cursor:pointer}.progress-bar{width:100%;height:4px;background:rgba(255,255,255,.25);border-radius:2px}.progress-played{width:0;height:100%;background:#ffc107;border-radius:2px}
-.bottom-controls{display:flex;justify-content:space-between;align-items:center}.controls-left,.controls-right{display:flex;align-items:center;gap:12px}
-#live-indicator{font-weight:700;font-size:.8rem;padding:3px 9px;border-radius:50px;color:#fff}#live-indicator.is-live{background:#e62e2e}#live-indicator.is-not-live{background:rgba(128,128,128,.8);cursor:pointer}
-.popup-menu{position:absolute;bottom:60px;width:180px;max-height:200px;overflow-y:auto;background:rgba(22,22,24,.96);border:1px solid rgba(255,255,255,.08);border-radius:10px;z-index:20;display:none}
-.popup-menu-list{list-style:none;padding:6px;margin:0}.menu-item{display:flex;justify-content:space-between;padding:7px 9px;border-radius:6px;cursor:pointer;font-weight:600;color:#ddd;font-size:12px}.menu-item.active{color:#ffc107}
+
+:root {
+    --primary-color: #ffc107;
+    --live-color: #e62e2e;
+    --not-live-color: rgba(128,128,128,.8);
+    --menu-bg: rgba(25,25,25,.95);
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Tajawal', sans-serif !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#player-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
+
+#loading-spinner {
+    position: absolute;
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255,255,255,.2);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#error-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,.92);
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+}
+
+#error-overlay svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+    color: #e62e2e;
+}
+
+#error-overlay h3 {
+    margin: 0 0 10px;
+}
+
+#error-overlay p {
+    max-width: 500px;
+    line-height: 1.7;
+    color: #ccc;
+}
+
+#error-retry-btn {
+    margin-top: 15px;
+    padding: 10px 22px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: #000;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.controls-overlay {
+    transition:
+        opacity .3s,
+        visibility .3s;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    position: absolute;
+    z-index: 10;
+}
+
+.controls-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#bottom-controls-container {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 15px;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.85),
+        transparent
+    );
+}
+
+#center-controls {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.control-button,
+.center-control-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.control-button:hover {
+    color: var(--primary-color);
+}
+
+.control-button svg,
+.control-button i {
+    width: 22px;
+    height: 22px;
+}
+
+.center-control-button {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-control-button svg,
+.center-control-button i {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(
+        0 0 8px rgba(0,0,0,.8)
+    );
+}
+
+#seek-backward-center-btn svg {
+    transform: scaleX(-1);
+}
+
+.progress-bar-container {
+    width: 100%;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,.3);
+    border-radius: 2px;
+}
+
+.progress-played {
+    width: 0;
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.bottom-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.controls-left,
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#live-indicator {
+    font-weight: 700;
+    font-size: .9rem;
+    letter-spacing: .5px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+#live-indicator.is-live {
+    background: var(--live-color);
+}
+
+#live-indicator.is-not-live {
+    background: var(--not-live-color);
+    cursor: pointer;
+}
+
+.popup-menu {
+    position: absolute;
+    bottom: 60px;
+    width: 200px;
+    background: var(--menu-bg);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    z-index: 20;
+    max-height: 220px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 8px 30px rgba(0,0,0,.45);
+}
+
+.popup-menu-list {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #fff;
+}
+
+.menu-item:hover {
+    background: rgba(255,255,255,.1);
+}
+
+.menu-item.active {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+#player-logo {
+    position: absolute;
+    bottom: 75px;
+    left: 15px;
+    z-index: 9;
+    opacity: .7;
+    height: 28px;
+    display: inline-block;
+}
+
+#player-logo img {
+    height: 100%;
+    width: auto;
+}
+
+@media(max-width:600px) {
+
+    #center-controls {
+        gap: 10px;
+    }
+
+    .center-control-button {
+        width: 60px;
+        height: 60px;
+    }
+
+    .center-control-button svg,
+    .center-control-button i {
+        width: 40px;
+        height: 40px;
+    }
+
+    .controls-left,
+    .controls-right {
+        gap: 10px;
+    }
+
+    .popup-menu {
+        width: 180px;
+    }
+}
+
 </style>
 </head>
+
 <body>
 
-<div id="login-overlay">
-    <div class="login-card">
-        <div class="login-logo">⚽</div>
-        <h1 class="login-title">الكرة لايف</h1>
-        <p class="login-sub">أدخل كلمة المرور<br>2626</p>
-        <input type="password" id="pass-input" class="pass-input" placeholder="2626" maxlength="10" inputmode="numeric">
-        <button id="login-btn" class="login-btn">دخول آمن 🔓</button>
-        <div id="error-msg" class="error-msg">كلمة المرور خاطئة</div>
-    </div>
-</div>
+<div id="player-container">
 
-<div id="main-site">
-    <div class="top-header">
-        <div class="logo"><span class="logo-dot"></span>الكرة لايف</div>
-        <div style="display:flex;gap:8px"><button class="icon-btn" id="logout-btn"><i data-feather="log-out" style="width:18px;height:18px;"></i></button></div>
-    </div>
-    <div class="main-wrapper" id="main-wrapper"></div>
-</div>
+    <div id="loading-spinner"></div>
 
-<div id="player-view">
-    <div class="player-header">
-        <div style="display:flex;align-items:center;gap:10px"><button id="back-btn"><i data-feather="arrow-right" style="width:20px;height:20px;"></i></button><div id="current-channel-name">الكرة</div></div>
-        <span style="font-size:10px;background:#ff1a1a;padding:3px 8px;border-radius:12px;font-weight:800;color:#fff">LIVE</span>
+    <div id="error-overlay">
+
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+
+        </svg>
+
+        <h3 id="error-title">
+            فشل تحميل البث
+        </h3>
+
+        <p id="error-message">
+            تعذر تشغيل البث.
+        </p>
+
+        <button id="error-retry-btn">
+            إعادة المحاولة
+        </button>
+
     </div>
-    <div class="servers-bar" id="servers-bar"></div>
-    <div id="player-container">
-        <div id="loading-spinner"></div>
-        <div id="error-overlay"><h3 id="error-title">فشل تحميل البث</h3><p id="error-message">جرب سيرفر آخر</p><button id="retry-server-btn" style="margin-top:12px;background:#fff;color:#000;border:none;padding:8px 18px;border-radius:20px;font-weight:800;font-family:Cairo">جرب سيرفر آخر</button></div>
-        <div id="video-wrapper"><video id="video" autoplay playsinline preload="auto"></video></div>
-        <div id="quality-popup" class="popup-menu"><ul id="quality-list" class="popup-menu-list"></ul></div>
-        <div id="audio-popup" class="popup-menu"><ul id="audio-list" class="popup-menu-list"></ul></div>
-        <div id="center-controls" class="controls-overlay visible"><button class="center-control-button" id="seek-backward-center-btn"><i data-feather="rewind"></i></button><button class="center-control-button" id="play-pause-center-btn"><i data-feather="play"></i></button><button class="center-control-button" id="seek-forward-center-btn"><i data-feather="fast-forward"></i></button></div>
-        <div id="bottom-controls-container" class="controls-overlay"><div class="progress-bar-container"><div class="progress-bar"><div class="progress-played"></div></div></div><div class="bottom-controls"><div class="controls-left"><button class="control-button" id="play-pause-btn"><i data-feather="play"></i></button><button class="control-button" id="mute-btn"><i data-feather="volume-2"></i></button><button class="control-button" id="quality-btn"><i data-feather="settings"></i></button><button class="control-button" id="audio-btn"><i data-feather="headphones"></i></button><div id="live-indicator"></div></div><div class="controls-right"><button class="control-button" id="pip-btn"><i data-feather="airplay"></i></button><button class="control-button" id="expand-btn"></button><button class="control-button" id="fullscreen-btn"><i data-feather="maximize"></i></button></div></div></div>
+
+    <div id="video-wrapper">
+
+        <video
+            id="video"
+            autoplay
+            muted
+            playsinline
+            preload="auto">
+        </video>
+
     </div>
+
+    <a
+        id="player-logo"
+        target="_blank"
+        href="https://t.me/bestvapp">
+
+        <img
+            alt="Logo"
+            src="http://ko.best-goal.live/app/logo.png">
+
+    </a>
+
+    <div
+        id="quality-popup"
+        class="popup-menu">
+
+        <ul
+            id="quality-list"
+            class="popup-menu-list">
+        </ul>
+
+    </div>
+
+    <div
+        id="audio-popup"
+        class="popup-menu">
+
+        <ul
+            id="audio-list"
+            class="popup-menu-list">
+        </ul>
+
+    </div>
+
+    <div
+        id="center-controls"
+        class="controls-overlay visible">
+
+        <button
+            class="center-control-button"
+            id="seek-backward-center-btn"
+            title="تقديم 10 ثواني">
+
+            <i data-feather="fast-forward"></i>
+
+        </button>
+
+        <button
+            class="center-control-button"
+            id="play-pause-center-btn"
+            title="تشغيل/إيقاف">
+
+            <i data-feather="pause"></i>
+
+        </button>
+
+        <button
+            class="center-control-button"
+            id="seek-forward-center-btn"
+            title="رجوع 10 ثواني">
+
+            <i data-feather="rewind"></i>
+
+        </button>
+
+    </div>
+
+    <div
+        id="bottom-controls-container"
+        class="controls-overlay visible">
+
+        <div class="progress-bar-container">
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-played">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="bottom-controls">
+
+            <div class="controls-left">
+
+                <button
+                    class="control-button"
+                    id="play-pause-btn"
+                    title="تشغيل/إيقاف">
+
+                    <i data-feather="pause"></i>
+
+                </button>
+
+                <button
+                    class="control-button"
+                    id="mute-btn"
+                    title="كتم الصوت">
+
+                    <i data-feather="volume-2"></i>
+
+                </button>
+
+                <button
+                    id="quality-btn"
+                    class="control-button"
+                    title="الجودة">
+
+                    <i data-feather="settings"></i>
+
+                </button>
+
+                <button
+                    id="audio-btn"
+                    class="control-button"
+                    title="الصوت">
+
+                    <i data-feather="headphones"></i>
+
+                </button>
+
+                <div
+                    id="live-indicator"
+                    class="is-live">
+
+                    ● مباشر
+
+                </div>
+
+            </div>
+
+            <div class="controls-right">
+
+                <button
+                    class="control-button"
+                    id="pip-btn"
+                    title="نافذة ضمن نافذة">
+
+                    <i data-feather="airplay"></i>
+
+                </button>
+
+                <button
+                    class="control-button"
+                    id="expand-btn"
+                    title="تغيير وضع العرض">
+
+                    <i data-feather="maximize"></i>
+
+                </button>
+
+                <button
+                    class="control-button"
+                    id="fullscreen-btn"
+                    title="ملء الشاشة">
+
+                    <i data-feather="maximize-2"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <script>
-function _0xenc(s){return btoa(unescape(encodeURIComponent(s))).split('').reverse().join('');}
-function _0xdec(s){try{return decodeURIComponent(escape(atob(s.split('').reverse().join(''))));}catch(e){return '';}}
 
-// دالة ذكية تفك كل أنواع التشفير: المعكوس + العادي Base64
-function smartDecode(str){
-    if(!str) return '';
-    str=str.trim();
-    // إذا كان يبدأ بـ = فهو تشفير معكوس
-    if(str.startsWith('=') || str.startsWith('==')){
-        const d=_0xdec(str);
-        if(d && d.startsWith('http')) return d;
-    }
-    // إذا كان Base64 عادي مثل aHR0c...
-    if(str.startsWith('aHR0')){
-        try{ return atob(str); }catch(e){}
-    }
-    // إذا كان نص عادي http
-    if(str.startsWith('http')) return str;
-    // جرب فك معكوس
-    try{
-        const d=_0xdec(str);
-        if(d) return d;
-    }catch(e){}
-    // جرب Base64 عادي
-    try{
-        const d=atob(str);
-        if(d) return d;
-    }catch(e){}
-    return str;
-}
+document.addEventListener('DOMContentLoaded', async () => {
 
-// رابطك الجديد للسعودية - Base64 عادي كما أرسلته
-const SAUDI_MPD_B64 = "aHR0cHM6Ly9zY2NjcndiLWxpdmUuY2RuLmludGlncmFsLW90dC5uZXQvYnBrLXR2L1NUQ1QxX0hFVkMvd3YtcHIvbWFuaWZlc3QubXBk";
-const SAUDI_KID = "714c789c76686632652eefc19f18c3db";
-const SAUDI_KEY = "962cee49ee9422b44a6c60a7999854ad";
+    /*
+     * ==========================================
+     * رابط البث المباشر
+     * ==========================================
+     */
 
-const _0xDATA = [
-    { id:'euro1', pkg:'euro', cls:'pill-euro', w:'1', ws:false, o:'الكرة الأوروبية', f:'الكرة الأوروبية 1', c:'euro',
-      s:[
-        {n:'سيرفر 1 - FHD', u:_0xenc('https://scccrwb-live.cdn.intigral-ott.net/bpk-tv/STC/wv-pr/manifest.mpd'), k:_0xenc('47f0ab58f5a81c20b5b69dc494cbe102'), ky:_0xenc('1e0719da653c2b4652f0b0bf84d96c74')},
-      ]},
-    { id:'euro2', pkg:'euro', cls:'pill-euro pill-euro-2', w:'2', ws:false, o:'الكرة الأوروبية', f:'الكرة الأوروبية 2', c:'euro',
-      s:[
-        {n:'سيرفر 1 - FHD', u:_0xenc('https://scccrwb-live.cdn.intigral-ott.net/bpk-tv/STC/wv-pr/manifest.mpd'), k:_0xenc('47f0ab58f5a81c20b5b69dc494cbe102'), ky:_0xenc('1e0719da653c2b4652f0b0bf84d96c74')},
-      ]},
-    { id:'eng1', pkg:'english', cls:'pill-eng', w:'EN', ws:true, o:'الكرة الإنجليزية 1', f:'الكرة الإنجليزية 1', c:'english',
-      s:[
-        {n:'سيرفر 1', u:_0xenc('https://scccrwb-live.cdn.intigral-ott.net/bpk-tv/STC/wv-pr/manifest.mpd'), k:_0xenc('47f0ab58f5a81c20b5b69dc494cbe102'), ky:_0xenc('1e0719da653c2b4652f0b0bf84d96c74')},
-      ]},
-    { id:'esp1', pkg:'spanish', cls:'pill-esp', w:'ES', ws:true, o:'الكرة الإسبانية', f:'الكرة الإسبانية', c:'spanish',
-      s:[
-        {n:'سيرفر 1', u:_0xenc('https://scccrwb-live.cdn.intigral-ott.net/bpk-tv/STC/wv-pr/manifest.mpd'), k:_0xenc('47f0ab58f5a81c20b5b69dc494cbe102'), ky:_0xenc('1e0719da653c2b4652f0b0bf84d96c74')},
-      ]},
-    { id:'ita1', pkg:'italy', cls:'pill-ita', w:'IT', ws:true, o:'الكرة الإيطالية', f:'الكرة الإيطالية', c:'italy',
-      s:[
-        {n:'سيرفر 1', u:_0xenc('https://scccrwb-live.cdn.intigral-ott.net/bpk-tv/STC/wv-pr/manifest.mpd'), k:_0xenc('47f0ab58f5a81c20b5b69dc494cbe102'), ky:_0xenc('1e0719da653c2b4652f0b0bf84d96c74')},
-      ]},
-    // السعودية - باستخدام رابطك الجديد HEVC مباشرة مع نفس طريقة المشغل الأصلي
-    { id:'sau1', pkg:'saudi', cls:'pill-sau', w:'SA', ws:true, o:'الكرة السعودية', f:'الكرة السعودية', c:'saudi',
-      s:[
-        {n:'سيرفر 1 - HEVC (رابطك الجديد)', u: SAUDI_MPD_B64, k: SAUDI_KID, ky: SAUDI_KEY, isB64:true},
-        {n:'سيرفر 2 - احتياطي STC', u:_0xenc('https://scccrwb-live.cdn.intigral-ott.net/bpk-tv/STC/wv-pr/manifest.mpd'), k:_0xenc('47f0ab58f5a81c20b5b69dc494cbe102'), ky:_0xenc('1e0719da653c2b4652f0b0bf84d96c74')},
-      ]},
-];
+    const STREAM_URL =
+        'https://akamai-live.servers8.com/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJQNjg5Nmx4MGFJVTFGdFF0UjlzWGViZG5FYjkyIiwiY2hhbm5lbE5hbWUiOiJjaDAxLWZ0YSIsImlwIjoiMjA5LjE5OC4xMzIuNzEiLCJpcF92NCI6IjIwOS4xOTguMTMyLjcxIiwiaXBfdjYiOiIiLCJ1c2VyQWdlbnQiOiJNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0OyBydjoxNTQuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC8xNTQuMCIsImhhc1N1YnNjcmlwdGlvbnMiOmZhbHNlLCJuYmYiOjE3ODc2NzY3ODIsImV4cCI6MTc4NzcyMzY0MiwiZ2VvQnlwYXNzIjpmYWxzZSwiaWF0IjoxNzg3Njc2ODQyfQ.Vhf1znaDmQ-R2dkv7URo9K08c8FszsI76sMvLpyMaV8/live/ch01-fta/index.m3u8';
 
-const loginOverlay=document.getElementById('login-overlay');
-const mainSite=document.getElementById('main-site');
-const passInput=document.getElementById('pass-input');
-const loginBtn=document.getElementById('login-btn');
-const errorMsg=document.getElementById('error-msg');
-function doLogin(){
-    if(passInput.value.trim()==='2626'){
-        sessionStorage.setItem('_auth','ok');
-        loginOverlay.style.display='none';
-        mainSite.classList.add('unlocked');
-        mainSite.style.display='block';
-        initSite();
-    }else{
-        errorMsg.style.display='block';
-        passInput.value='';
-    }
-}
-loginBtn.addEventListener('click', doLogin);
-passInput.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-if(sessionStorage.getItem('_auth')){
-    loginOverlay.style.display='none';
-    mainSite.classList.add('unlocked');
-    mainSite.style.display='block';
-}
-document.getElementById('logout-btn').addEventListener('click', ()=>{ sessionStorage.removeItem('_auth'); location.reload(); });
 
-let player, currentChannel=null, currentServerIndex=0;
-let controlsTimeout=null, clickTimer=null, retryTimer=null, expandModeIndex=0;
-const expandModes=['contain','cover','fill'];
+    /*
+     * ==========================================
+     * الإعدادات
+     * ==========================================
+     */
 
-function initSite(){
-    if(document.getElementById('main-wrapper').children.length>0) return;
-    feather.replace();
-    const wrapper=document.getElementById('main-wrapper');
-    const pkgs=[
-        {key:'euro', name:'باقة الكرة الأوروبية'},
-        {key:'english', name:'الدوري الإنجليزي'},
-        {key:'spanish', name:'الدوري الإسباني'},
-        {key:'italy', name:'الدوري الإيطالي'},
-        {key:'saudi', name:'الدوري السعودي'},
+    const MAX_RETRIES = 5;
+
+    const RETRY_DELAY_MS = 1500;
+
+    let controlsTimeout;
+
+    let clickTimer;
+
+    let expandModeIndex = 0;
+
+    const expandModes = [
+        'contain',
+        'cover',
+        'fill'
     ];
-    pkgs.forEach(pkg=>{
-        const block=document.createElement('div'); block.className='section-block';
-        block.innerHTML=`<div class="section-head"><h2>${pkg.name}</h2><div class="line"></div></div><div class="pills-grid" id="pkg-${pkg.key}"></div>`;
-        wrapper.appendChild(block);
-    });
-    _0xDATA.forEach(ch=>{
-        const pill=document.createElement('div'); pill.className='channel-pill-3d '+ch.cls;
-        pill.innerHTML=`<div class="num-box-3d ${ch.ws?'small-code':''}"><span>${ch.w}</span></div><div class="label-box-3d"><span>${ch.o}</span></div>`;
-        pill.addEventListener('click', ()=>{ openChannel(ch); });
-        const grid=document.getElementById('pkg-'+ch.c);
-        if(grid) grid.appendChild(pill);
-    });
-    initPlayer();
-}
 
-function initPlayer(){
-    const elements={
-        video:document.getElementById('video'),
-        playerContainer:document.getElementById('player-container'),
-        videoWrapper:document.getElementById('video-wrapper'),
-        centerControls:document.getElementById('center-controls'),
-        bottomControls:document.getElementById('bottom-controls-container'),
-        playPauseBtn:document.getElementById('play-pause-btn'),
-        playPauseCenterBtn:document.getElementById('play-pause-center-btn'),
-        muteBtn:document.getElementById('mute-btn'),
-        pipBtn:document.getElementById('pip-btn'),
-        expandBtn:document.getElementById('expand-btn'),
-        fullscreenBtn:document.getElementById('fullscreen-btn'),
-        liveIndicator:document.getElementById('live-indicator'),
-        progressPlayed:document.querySelector('.progress-played'),
-        progressBarContainer:document.querySelector('.progress-bar-container'),
-        qualityBtn:document.getElementById('quality-btn'),
-        audioBtn:document.getElementById('audio-btn'),
-        qualityPopup:document.getElementById('quality-popup'),
-        audioPopup:document.getElementById('audio-popup'),
-        loadingSpinner:document.getElementById('loading-spinner'),
-        errorOverlay:document.getElementById('error-overlay'),
-        errorTitle:document.getElementById('error-title'),
-        errorMessage:document.getElementById('error-message'),
-        serversBar:document.getElementById('servers-bar'),
-        currentName:document.getElementById('current-channel-name'),
-        backBtn:document.getElementById('back-btn'),
-        retryBtn:document.getElementById('retry-server-btn'),
+
+    /*
+     * ==========================================
+     * العناصر
+     * ==========================================
+     */
+
+    const elements = {
+
+        video:
+            document.getElementById('video'),
+
+        playerContainer:
+            document.getElementById('player-container'),
+
+        videoWrapper:
+            document.getElementById('video-wrapper'),
+
+        centerControls:
+            document.getElementById('center-controls'),
+
+        bottomControls:
+            document.getElementById(
+                'bottom-controls-container'
+            ),
+
+        playPauseBtn:
+            document.getElementById(
+                'play-pause-btn'
+            ),
+
+        playPauseCenterBtn:
+            document.getElementById(
+                'play-pause-center-btn'
+            ),
+
+        muteBtn:
+            document.getElementById(
+                'mute-btn'
+            ),
+
+        pipBtn:
+            document.getElementById(
+                'pip-btn'
+            ),
+
+        expandBtn:
+            document.getElementById(
+                'expand-btn'
+            ),
+
+        fullscreenBtn:
+            document.getElementById(
+                'fullscreen-btn'
+            ),
+
+        liveIndicator:
+            document.getElementById(
+                'live-indicator'
+            ),
+
+        progressPlayed:
+            document.querySelector(
+                '.progress-played'
+            ),
+
+        progressBarContainer:
+            document.querySelector(
+                '.progress-bar-container'
+            ),
+
+        qualityBtn:
+            document.getElementById(
+                'quality-btn'
+            ),
+
+        audioBtn:
+            document.getElementById(
+                'audio-btn'
+            ),
+
+        qualityPopup:
+            document.getElementById(
+                'quality-popup'
+            ),
+
+        audioPopup:
+            document.getElementById(
+                'audio-popup'
+            ),
+
+        loadingSpinner:
+            document.getElementById(
+                'loading-spinner'
+            ),
+
+        errorOverlay:
+            document.getElementById(
+                'error-overlay'
+            ),
+
+        errorTitle:
+            document.getElementById(
+                'error-title'
+            ),
+
+        errorMessage:
+            document.getElementById(
+                'error-message'
+            ),
+
+        retryBtn:
+            document.getElementById(
+                'error-retry-btn'
+            ),
+
+        playerLogoLink:
+            document.getElementById(
+                'player-logo'
+            )
+
     };
-    const expandSvg=`<svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 100 100"><path d="M22.6 20.5H36c1.1 0 2-.9 2-2s-.9-2-2-2H19c-1.1 0-2.5 1.2-2.5 2.4v17c0 1.1.9 2 2 2s2-.9 2-2V24.9l16 15.8c.4.4 1 .6 1.5.6s1.1-.2 1.5-.6c.8-.8.8-2.2 0-3L22.6 20.5z"/><path d="M83 16.5H66c-1.1 0-2 .9-2 2s.9 2 2 2h12.6L61.6 37.6c-.8.8-.8 2.1 0 2.9.4.4.9.6 1.4.6s.8-.2 1.2-.6l16.3-16.5v11.7c0 1.1.9 2 2 2s2-.9 2-2v-17c0-1.1-.5-2.2-1.5-2.2z"/><path d="M36.5 61L20.5 76.8V65.9c0-1.1-.9-2-2-2s-2 .9-2 2v17c0 1.1 1.4 1.6 2.5 1.6h17c1.1 0 2-.9 2-2s-.9-2-2-2H22.5l17.1-15.9c.8-.8.7-2-.1-2.7-.8-.8-2.2-.7-3 .1z"/><path d="M82.5 63.9c-1.1 0-2 .9-2 2v11.6L64.2 61c-.8-.8-1.9-.8-2.7 0-.8.8-.7 1.9.1 2.6l17.2 16.9H66c-1.1 0-2 .9-2 2s.9 2 2 2h17c1.1 0 1.5-.5 1.5-1.6v-17c0-1.1-.9-2-2-2z"/></svg>`;
-    elements.expandBtn.innerHTML=expandSvg; feather.replace();
-    if(!shaka.Player.isBrowserSupported()) return;
-    player=new shaka.Player(elements.video);
-    player.configure({manifest:{dash:{ignoreMinBufferTime:true}},streaming:{rebufferingGoal:2,bufferingGoal:10,bufferBehind:30,retryParameters:{timeout:15000,maxAttempts:4,baseDelay:1000,backoffFactor:2}},abr:{enabled:true,defaultBandwidthEstimate:3000000}});
 
-    window.openChannel=async function(channel){
-        currentChannel=channel; currentServerIndex=0;
-        elements.currentName.textContent=channel.f;
-        document.getElementById('player-view').classList.add('visible');
-        renderServers(channel);
-        await loadServer(channel,0);
-    };
-    function renderServers(channel){
-        elements.serversBar.innerHTML='';
-        channel.s.forEach((srv,idx)=>{
-            const btn=document.createElement('button'); btn.className='server-btn'+(idx===currentServerIndex?' active':''); btn.textContent=srv.n;
-            btn.addEventListener('click',()=>{ currentServerIndex=idx; document.querySelectorAll('.server-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); loadServer(channel,idx); });
-            elements.serversBar.appendChild(btn);
-        });
-    }
-    async function loadServer(channel,idx){
-        const srv=channel.s[idx]; if(!srv) return;
-        // فك تشفير ذكي يدعم رابطك Base64 العادي + المشفر المعكوس + العادي
-        let url, kid, key;
-        if(srv.isB64){
-            // رابطك الخاص - Base64 عادي + KID/KEY عادي
-            try{ url=atob(srv.u); }catch(e){ url=srv.u; }
-            kid=srv.k; key=srv.ky;
-        }else{
-            url=smartDecode(srv.u);
-            kid=srv.k ? smartDecode(srv.k) : '';
-            key=srv.ky ? smartDecode(srv.ky) : '';
-        }
-        console.log('Loading:', url, kid, key);
-        elements.loadingSpinner.style.display='flex';
-        elements.errorOverlay.style.display='none';
-        try{
-            if(kid&&key){ const ck={}; ck[kid]=key; player.configure({drm:{clearKeys:ck}}); } else { player.configure({drm:{clearKeys:{}}}); }
-            await player.unload().catch(()=>{}); 
-            await player.load(url);
-            elements.loadingSpinner.style.display='none';
-            elements.centerControls.classList.add('visible');
-            elements.bottomControls.classList.add('visible');
-            setTimeout(()=>{ if(!elements.video.paused){ elements.centerControls.classList.remove('visible'); elements.bottomControls.classList.remove('visible'); } },3000);
-            elements.video.muted=false;
-            try{ await elements.video.play(); }catch(e){ elements.video.muted=true; await elements.video.play().catch(()=>{}); }
-        }catch(e){
-            console.error('Shaka load failed', e);
-            elements.loadingSpinner.style.display='none';
-            elements.errorOverlay.style.display='flex';
-            elements.errorTitle.textContent='فشل تحميل البث';
-            elements.errorMessage.textContent='السيرفر HEVC قد لا يدعم متصفحك - جرب السيرفر الاحتياطي';
-        }
-    }
-    function showControls(){ [elements.bottomControls, elements.centerControls].forEach(el=>el.classList.add('visible')); clearTimeout(controlsTimeout); if(!elements.video.paused){ controlsTimeout=setTimeout(()=>{ [elements.bottomControls, elements.centerControls].forEach(el=>el.classList.remove('visible')); },3000); } }
-    function hideControls(){ [elements.bottomControls, elements.centerControls].forEach(el=>el.classList.remove('visible')); }
-    function togglePlay(){ if(elements.video.paused) elements.video.play().catch(()=>{}); else elements.video.pause(); }
-    function updatePlayButton(){ const ic=elements.video.paused?'play':'pause'; elements.playPauseBtn.innerHTML=`<i data-feather="${ic}"></i>`; elements.playPauseCenterBtn.innerHTML=`<i data-feather="${ic}"></i>`; feather.replace(); }
-    function updateVolumeIcon(){ const ic=elements.video.muted||elements.video.volume===0?'volume-x':'volume-2'; elements.muteBtn.innerHTML=`<i data-feather="${ic}"></i>`; feather.replace(); }
-    async function toggleFullscreen(){ try{ if(!document.fullscreenElement) await elements.playerContainer.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} }
-    elements.backBtn.addEventListener('click', async()=>{ try{ await player.unload(); elements.video.pause(); }catch(e){} document.getElementById('player-view').classList.remove('visible'); if(document.fullscreenElement) try{ await document.exitFullscreen(); }catch(e){} });
-    elements.retryBtn.addEventListener('click', ()=>{ if(!currentChannel) return; let nxt=(currentServerIndex+1)%currentChannel.s.length; currentServerIndex=nxt; renderServers(currentChannel); loadServer(currentChannel,nxt); });
-    elements.playPauseBtn.addEventListener('click', e=>{ e.stopPropagation(); togglePlay(); });
-    elements.playPauseCenterBtn.addEventListener('click', e=>{ e.stopPropagation(); togglePlay(); });
-    elements.muteBtn.addEventListener('click', e=>{ e.stopPropagation(); elements.video.muted=!elements.video.muted; updateVolumeIcon(); });
-    elements.qualityBtn.addEventListener('click', e=>{
-        e.stopPropagation();
-        const popup=elements.qualityPopup;
-        if(popup.style.display==='block'){ popup.style.display='none'; return; }
-        const list=document.getElementById('quality-list'); list.innerHTML='';
-        const tracks=player.getVariantTracks(); const cfg=player.getConfiguration();
-        const auto=document.createElement('li'); auto.className=`menu-item ${cfg.abr.enabled?'active':''}`; auto.textContent='تلقائي'; auto.onclick=()=>{ player.configure('abr.enabled',true); popup.style.display='none'; }; list.appendChild(auto);
-        const hs=[...new Set(tracks.map(t=>t.height).filter(Boolean))].sort((a,b)=>b-a);
-        hs.forEach(h=>{ const tr=tracks.find(x=>x.height===h); const li=document.createElement('li'); li.className='menu-item'; li.textContent=h+'p'; li.onclick=()=>{ player.configure('abr.enabled',false); player.selectVariantTrack(tr,true); popup.style.display='none'; }; list.appendChild(li); });
-        popup.style.display='block';
-    });
-    elements.audioBtn.addEventListener('click', e=>{
-        e.stopPropagation();
-        const popup=elements.audioPopup;
-        if(popup.style.display==='block'){ popup.style.display='none'; return; }
-        const list=document.getElementById('audio-list'); list.innerHTML='';
-        const audios=player.getAudioLanguagesAndRoles();
-        audios.forEach(tr=>{ const li=document.createElement('li'); li.className='menu-item'; li.textContent=tr.label||tr.language||'الصوت'; li.onclick=()=>{ player.selectAudioLanguage(tr.language,tr.role); popup.style.display='none'; }; list.appendChild(li); });
-        popup.style.display='block';
-    });
-    document.getElementById('seek-forward-center-btn').addEventListener('click', e=>{ e.stopPropagation(); elements.video.currentTime+=10; });
-    document.getElementById('seek-backward-center-btn').addEventListener('click', e=>{ e.stopPropagation(); elements.video.currentTime-=10; });
-    elements.fullscreenBtn.addEventListener('click', e=>{ e.stopPropagation(); toggleFullscreen(); });
-    elements.videoWrapper.addEventListener('click', e=>{
-        if(e.target!==elements.videoWrapper) return;
-        clearTimeout(clickTimer);
-        clickTimer=setTimeout(()=>{ if(elements.bottomControls.classList.contains('visible')){ elements.bottomControls.classList.remove('visible'); elements.centerControls.classList.remove('visible'); } else { elements.bottomControls.classList.add('visible'); elements.centerControls.classList.add('visible'); } },200);
-    });
-    elements.playerContainer.addEventListener('mousemove', ()=>{ elements.bottomControls.classList.add('visible'); elements.centerControls.classList.add('visible'); clearTimeout(controlsTimeout); controlsTimeout=setTimeout(()=>{ if(!elements.video.paused){ elements.bottomControls.classList.remove('visible'); elements.centerControls.classList.remove('visible'); } },3000); });
-    elements.video.addEventListener('play', updatePlayButton);
-    elements.video.addEventListener('pause', updatePlayButton);
-    elements.video.addEventListener('volumechange', updateVolumeIcon);
-}
 
-if(sessionStorage.getItem('_auth')){
-    loginOverlay.style.display='none';
-    mainSite.classList.add('unlocked');
-    mainSite.style.display='block';
-    setTimeout(initSite, 100);
-}
-feather.replace();
+    /*
+     * ==========================================
+     * تهيئة Shaka Player
+     * ==========================================
+     */
+
+    shaka.polyfill.installAll();
+
+    if (!shaka.Player.isBrowserSupported()) {
+
+        showError(
+            'المتصفح غير مدعوم',
+            'هذا المتصفح لا يدعم تشغيل البث المطلوب.'
+        );
+
+        return;
+    }
+
+    const player =
+        new shaka.Player(
+            elements.video
+        );
+
+
+    /*
+     * ==========================================
+     * إعدادات المشغل
+     * ==========================================
+     */
+
+    player.configure({
+
+        manifest: {
+
+            dash: {
+                ignoreMinBufferTime: true
+            },
+
+            hls: {
+                ignoreTextStreamFailures: true
+            }
+
+        },
+
+        streaming: {
+
+            rebufferingGoal: 2,
+
+            bufferingGoal: 10,
+
+            bufferBehind: 30,
+
+            retryParameters: {
+
+                maxAttempts: 4,
+
+                baseDelay: 500,
+
+                backoffFactor: 1.5,
+
+                fuzzFactor: .5,
+
+                timeout: 10000
+
+            }
+
+        },
+
+        abr: {
+
+            enabled: true,
+
+            defaultBandwidthEstimate: 3000000
+
+        }
+
+    });
+
+
+    /*
+     * ==========================================
+     * إظهار الخطأ
+     * ==========================================
+     */
+
+    function showError(
+        title,
+        message
+    ) {
+
+        elements.loadingSpinner.style.display =
+            'none';
+
+        elements.errorTitle.textContent =
+            title;
+
+        elements.errorMessage.textContent =
+            message;
+
+        elements.errorOverlay.style.display =
+            'flex';
+
+        feather.replace();
+
+    }
+
+
+    /*
+     * ==========================================
+     * إخفاء الخطأ
+     * ==========================================
+     */
+
+    function hideError() {
+
+        elements.errorOverlay.style.display =
+            'none';
+
+    }
+
+
+    /*
+     * ==========================================
+     * تحميل البث
+     * ==========================================
+     */
+
+    async function initializeApp() {
+
+        hideError();
+
+        elements.loadingSpinner.style.display =
+            'flex';
+
+        for (
+            let attempt = 1;
+            attempt <= MAX_RETRIES;
+            attempt++
+        ) {
+
+            try {
+
+                console.log(
+                    `[INFO] Loading stream. Attempt ${attempt}`
+                );
+
+                /*
+                 * في كل محاولة نعيد تحميل الرابط
+                 */
+
+                await player.load(
+                    STREAM_URL
+                );
+
+                console.log(
+                    '[SUCCESS] Stream loaded successfully.'
+                );
+
+                elements.loadingSpinner.style.display =
+                    'none';
+
+                showControls();
+
+                updatePlayButton();
+
+                populateQualityMenu();
+
+                populateAudioMenu();
+
+                /*
+                 * محاولة التشغيل التلقائي
+                 */
+
+                try {
+
+                    await elements.video.play();
+
+                } catch (autoplayError) {
+
+                    console.warn(
+                        '[WARN] Autoplay blocked:',
+                        autoplayError
+                    );
+
+                }
+
+                return;
+
+            } catch (error) {
+
+                console.warn(
+                    `[WARN] Attempt ${attempt} failed:`,
+                    error
+                );
+
+                if (
+                    attempt === MAX_RETRIES
+                ) {
+
+                    console.error(
+                        '[FATAL] All attempts failed.',
+                        error
+                    );
+
+                    showError(
+                        'فشل تحميل البث',
+                        'تعذر تشغيل البث. قد يكون الرابط منتهي الصلاحية أو أن الخادم يمنع التشغيل من هذا الموقع.'
+                    );
+
+                    return;
+
+                }
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            RETRY_DELAY_MS
+                        )
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /*
+     * ==========================================
+     * التحكم بالمشغل
+     * ==========================================
+     */
+
+    function showControls() {
+
+        [
+            elements.bottomControls,
+            elements.centerControls
+        ].forEach(
+            el =>
+                el.classList.add(
+                    'visible'
+                )
+        );
+
+        clearTimeout(
+            controlsTimeout
+        );
+
+        if (
+            !elements.video.paused
+        ) {
+
+            controlsTimeout =
+                setTimeout(
+                    hideControls,
+                    3000
+                );
+
+        }
+
+    }
+
+
+    function hideControls() {
+
+        if (
+            document.fullscreenElement &&
+            elements.video.paused
+        ) {
+
+            return;
+
+        }
+
+        [
+            elements.bottomControls,
+            elements.centerControls
+        ].forEach(
+            el =>
+                el.classList.remove(
+                    'visible'
+                )
+        );
+
+        elements.qualityPopup.style.display =
+            'none';
+
+        elements.audioPopup.style.display =
+            'none';
+
+    }
+
+
+    function togglePlay() {
+
+        if (
+            elements.video.paused
+        ) {
+
+            elements.video.play()
+                .catch(
+                    error =>
+                        console.warn(
+                            'Play failed:',
+                            error
+                        )
+                );
+
+        } else {
+
+            elements.video.pause();
+
+        }
+
+    }
+
+
+    function updatePlayButton() {
+
+        const icon =
+            elements.video.paused
+                ? 'play'
+                : 'pause';
+
+        elements.playPauseBtn.innerHTML =
+            `<i data-feather="${icon}"></i>`;
+
+        elements.playPauseCenterBtn.innerHTML =
+            `<i data-feather="${icon}"></i>`;
+
+        feather.replace();
+
+    }
+
+
+    /*
+     * ==========================================
+     * ملء الشاشة
+     * ==========================================
+     */
+
+    async function toggleFullscreen() {
+
+        try {
+
+            if (
+                !document.fullscreenElement
+            ) {
+
+                await elements.playerContainer
+                    .requestFullscreen();
+
+            } else {
+
+                await document.exitFullscreen();
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                'Fullscreen error:',
+                error
+            );
+
+        }
+
+    }
+
+
+    function updateFullscreenIcon() {
+
+        elements.fullscreenBtn.innerHTML =
+            `<i data-feather="${
+                document.fullscreenElement
+                    ? 'minimize-2'
+                    : 'maximize-2'
+            }"></i>`;
+
+        feather.replace();
+
+    }
+
+
+    /*
+     * ==========================================
+     * القوائم المنبثقة
+     * ==========================================
+     */
+
+    function togglePopup(
+        button,
+        popup,
+        populator
+    ) {
+
+        const otherPopups = [
+            elements.qualityPopup,
+            elements.audioPopup
+        ].filter(
+            p => p !== popup
+        );
+
+        otherPopups.forEach(
+            p =>
+                p.style.display =
+                    'none'
+        );
+
+        if (
+            popup.style.display === 'block'
+        ) {
+
+            popup.style.display =
+                'none';
+
+            return;
+
+        }
+
+        if (populator) {
+
+            populator();
+
+        }
+
+        const containerRect =
+            elements.playerContainer
+                .getBoundingClientRect();
+
+        const buttonRect =
+            button.getBoundingClientRect();
+
+        const popupWidth =
+            popup.offsetWidth || 200;
+
+        const buttonCenter =
+            (
+                buttonRect.left -
+                containerRect.left
+            ) +
+            (
+                buttonRect.width / 2
+            );
+
+        let popupLeft =
+            buttonCenter -
+            (
+                popupWidth / 2
+            );
+
+        if (
+            popupLeft < 10
+        ) {
+
+            popupLeft = 10;
+
+        }
+
+        if (
+            popupLeft +
+            popupWidth >
+            containerRect.width - 10
+        ) {
+
+            popupLeft =
+                containerRect.width -
+                popupWidth -
+                10;
+
+        }
+
+        popup.style.left =
+            `${popupLeft}px`;
+
+        popup.style.display =
+            'block';
+
+    }
+
+
+    /*
+     * ==========================================
+     * الجودة
+     * ==========================================
+     */
+
+    function populateQualityMenu() {
+
+        const list =
+            document.getElementById(
+                'quality-list'
+            );
+
+        list.innerHTML = '';
+
+        const tracks =
+            player.getVariantTracks();
+
+        if (!tracks.length) {
+
+            const item =
+                document.createElement(
+                    'li'
+                );
+
+            item.className =
+                'menu-item active';
+
+            item.textContent =
+                'تلقائي';
+
+            list.appendChild(item);
+
+            return;
+
+        }
+
+        const config =
+            player.getConfiguration();
+
+        const isAbrEnabled =
+            config.abr.enabled;
+
+        const activeTrack =
+            tracks.find(
+                t => t.active
+            );
+
+        const auto =
+            document.createElement(
+                'li'
+            );
+
+        auto.className =
+            `menu-item ${
+                isAbrEnabled
+                    ? 'active'
+                    : ''
+            }`;
+
+        auto.textContent =
+            'تلقائي';
+
+        auto.onclick = () => {
+
+            player.configure(
+                'abr.enabled',
+                true
+            );
+
+            togglePopup(
+                elements.qualityBtn,
+                elements.qualityPopup
+            );
+
+        };
+
+        list.appendChild(
+            auto
+        );
+
+        const heights = [
+            ...new Set(
+                tracks
+                    .map(
+                        t => t.height
+                    )
+                    .filter(Boolean)
+            )
+        ].sort(
+            (a,b) => b-a
+        );
+
+        heights.forEach(
+            height => {
+
+                const track =
+                    tracks.find(
+                        t =>
+                            t.height ===
+                            height
+                    );
+
+                if (!track) {
+                    return;
+                }
+
+                const item =
+                    document.createElement(
+                        'li'
+                    );
+
+                item.className =
+                    `menu-item ${
+                        !isAbrEnabled &&
+                        activeTrack &&
+                        activeTrack.height ===
+                        height
+                            ? 'active'
+                            : ''
+                    }`;
+
+                item.textContent =
+                    `${height}p`;
+
+                item.onclick = () => {
+
+                    player.configure(
+                        'abr.enabled',
+                        false
+                    );
+
+                    player.selectVariantTrack(
+                        track,
+                        true
+                    );
+
+                    togglePopup(
+                        elements.qualityBtn,
+                        elements.qualityPopup
+                    );
+
+                };
+
+                list.appendChild(
+                    item
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+     * ==========================================
+     * المسارات الصوتية
+     * ==========================================
+     */
+
+    function populateAudioMenu() {
+
+        const list =
+            document.getElementById(
+                'audio-list'
+            );
+
+        list.innerHTML = '';
+
+        const audioTracks =
+            player.getAudioLanguagesAndRoles();
+
+        if (
+            !audioTracks ||
+            !audioTracks.length
+        ) {
+
+            const item =
+                document.createElement(
+                    'li'
+                );
+
+            item.className =
+                'menu-item active';
+
+            item.textContent =
+                'الصوت الافتراضي';
+
+            list.appendChild(
+                item
+            );
+
+            return;
+
+        }
+
+        const currentLanguage =
+            player.getAudioLanguages()[0];
+
+        audioTracks.forEach(
+            track => {
+
+                const item =
+                    document.createElement(
+                        'li'
+                    );
+
+                item.className =
+                    `menu-item ${
+                        track.language ===
+                        currentLanguage
+                            ? 'active'
+                            : ''
+                    }`;
+
+                item.textContent =
+                    track.label ||
+                    track.language ||
+                    'Audio';
+
+                item.onclick = () => {
+
+                    player.selectAudioLanguage(
+                        track.language,
+                        track.role
+                    );
+
+                    togglePopup(
+                        elements.audioBtn,
+                        elements.audioPopup
+                    );
+
+                };
+
+                list.appendChild(
+                    item
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+     * ==========================================
+     * التقدم والـ Live
+     * ==========================================
+     */
+
+    function formatTime(
+        seconds
+    ) {
+
+        if (
+            isNaN(seconds) ||
+            seconds < 0
+        ) {
+
+            return '00:00';
+
+        }
+
+        const date =
+            new Date(null);
+
+        date.setSeconds(
+            seconds
+        );
+
+        const iso =
+            date.toISOString();
+
+        return seconds >= 3600
+            ? iso.substr(11,8)
+            : iso.substr(14,5);
+
+    }
+
+
+    elements.video.addEventListener(
+        'timeupdate',
+        () => {
+
+            try {
+
+                const range =
+                    player.seekRange();
+
+                if (
+                    !isFinite(range.end)
+                ) {
+
+                    return;
+
+                }
+
+                if (
+                    player.isLive()
+                ) {
+
+                    elements.liveIndicator
+                        .style.display =
+                        'inline-block';
+
+                    const behind =
+                        elements.video.paused ||
+                        (
+                            range.end -
+                            elements.video.currentTime
+                        ) > 15;
+
+                    elements.liveIndicator.className =
+                        behind
+                            ? 'is-not-live'
+                            : 'is-live';
+
+                    elements.liveIndicator.innerHTML =
+                        behind
+                            ? '&#9679; متأخر'
+                            : '&#9679; مباشر';
+
+                } else if (
+                    range.end > 0
+                ) {
+
+                    elements.liveIndicator
+                        .style.display =
+                        'inline-block';
+
+                    elements.liveIndicator.className =
+                        '';
+
+                    elements.liveIndicator.style
+                        .backgroundColor =
+                        'transparent';
+
+                    elements.liveIndicator.style
+                        .cursor =
+                        'default';
+
+                    elements.liveIndicator.innerHTML =
+                        `${formatTime(
+                            elements.video.currentTime
+                        )} / ${formatTime(
+                            range.end
+                        )}`;
+
+                    const percentage =
+                        (
+                            (
+                                elements.video.currentTime -
+                                range.start
+                            ) /
+                            (
+                                range.end -
+                                range.start
+                            )
+                        ) * 100;
+
+                    elements.progressPlayed.style.width =
+                        `${Math.max(
+                            0,
+                            Math.min(
+                                100,
+                                percentage
+                            )
+                        )}%`;
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    'Time update error:',
+                    error
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * شريط التقدم
+     * ==========================================
+     */
+
+    elements.progressBarContainer.addEventListener(
+        'click',
+        e => {
+
+            if (
+                player.isLive()
+            ) {
+
+                return;
+
+            }
+
+            const range =
+                player.seekRange();
+
+            const rect =
+                elements.progressBarContainer
+                    .getBoundingClientRect();
+
+            const percentage =
+                (
+                    e.clientX -
+                    rect.left
+                ) /
+                rect.width;
+
+            elements.video.currentTime =
+                range.start +
+                percentage *
+                (
+                    range.end -
+                    range.start
+                );
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * أزرار التحكم
+     * ==========================================
+     */
+
+    elements.playPauseBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            togglePlay();
+
+        }
+    );
+
+    elements.playPauseCenterBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            togglePlay();
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            'seek-forward-center-btn'
+        )
+        .addEventListener(
+            'click',
+            e => {
+
+                e.stopPropagation();
+
+                elements.video.currentTime -=
+                    10;
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            'seek-backward-center-btn'
+        )
+        .addEventListener(
+            'click',
+            e => {
+
+                e.stopPropagation();
+
+                elements.video.currentTime +=
+                    10;
+
+            }
+        );
+
+
+    elements.muteBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            elements.video.muted =
+                !elements.video.muted;
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * Picture in Picture
+     * ==========================================
+     */
+
+    elements.pipBtn.addEventListener(
+        'click',
+        async e => {
+
+            e.stopPropagation();
+
+            try {
+
+                if (
+                    document.pictureInPictureElement
+                ) {
+
+                    await document
+                        .exitPictureInPicture();
+
+                } else if (
+                    document.pictureInPictureEnabled
+                ) {
+
+                    await elements.video
+                        .requestPictureInPicture();
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    'PiP error:',
+                    error
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * تغيير طريقة عرض الفيديو
+     * ==========================================
+     */
+
+    elements.expandBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            expandModeIndex =
+                (
+                    expandModeIndex + 1
+                ) %
+                expandModes.length;
+
+            elements.video.style.objectFit =
+                expandModes[
+                    expandModeIndex
+                ];
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * Fullscreen
+     * ==========================================
+     */
+
+    elements.fullscreenBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            toggleFullscreen();
+
+        }
+    );
+
+
+    document.addEventListener(
+        'fullscreenchange',
+        updateFullscreenIcon
+    );
+
+
+    /*
+     * ==========================================
+     * أزرار الجودة والصوت
+     * ==========================================
+     */
+
+    elements.qualityBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            togglePopup(
+                e.currentTarget,
+                elements.qualityPopup,
+                populateQualityMenu
+            );
+
+        }
+    );
+
+
+    elements.audioBtn.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            togglePopup(
+                e.currentTarget,
+                elements.audioPopup,
+                populateAudioMenu
+            );
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * النقر على الفيديو
+     * ==========================================
+     */
+
+    elements.videoWrapper.addEventListener(
+        'click',
+        e => {
+
+            if (
+                e.target !== elements.video &&
+                e.target !== elements.videoWrapper
+            ) {
+
+                return;
+
+            }
+
+            clearTimeout(
+                clickTimer
+            );
+
+            clickTimer =
+                setTimeout(
+                    () => {
+
+                        if (
+                            elements.bottomControls
+                                .classList
+                                .contains('visible')
+                        ) {
+
+                            hideControls();
+
+                        } else {
+
+                            showControls();
+
+                        }
+
+                    },
+                    200
+                );
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * Double Click
+     * ==========================================
+     */
+
+    elements.video.addEventListener(
+        'dblclick',
+        async e => {
+
+            e.stopPropagation();
+
+            clearTimeout(
+                clickTimer
+            );
+
+            await toggleFullscreen();
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * حركة الماوس
+     * ==========================================
+     */
+
+    elements.playerContainer.addEventListener(
+        'mousemove',
+        showControls
+    );
+
+    elements.playerContainer.addEventListener(
+        'touchstart',
+        showControls,
+        {
+            passive: true
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * أحداث الفيديو
+     * ==========================================
+     */
+
+    elements.video.addEventListener(
+        'play',
+        () => {
+
+            updatePlayButton();
+
+            showControls();
+
+        }
+    );
+
+
+    elements.video.addEventListener(
+        'pause',
+        () => {
+
+            updatePlayButton();
+
+            showControls();
+
+        }
+    );
+
+
+    elements.video.addEventListener(
+        'volumechange',
+        () => {
+
+            elements.muteBtn.innerHTML =
+                `<i data-feather="${
+                    elements.video.muted ||
+                    elements.video.volume === 0
+                        ? 'volume-x'
+                        : 'volume-2'
+                }"></i>`;
+
+            feather.replace();
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * الرجوع إلى Live
+     * ==========================================
+     */
+
+    elements.liveIndicator.addEventListener(
+        'click',
+        e => {
+
+            e.stopPropagation();
+
+            if (
+                elements.liveIndicator
+                    .classList
+                    .contains('is-not-live') &&
+                player.isLive()
+            ) {
+
+                const range =
+                    player.seekRange();
+
+                elements.video.currentTime =
+                    range.end;
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * أخطاء Shaka
+     * ==========================================
+     */
+
+    player.addEventListener(
+        'error',
+        event => {
+
+            console.error(
+                '[SHAKA ERROR]',
+                event.detail
+            );
+
+            /*
+             * لا نعرض الخطأ فوراً أثناء buffering
+             * لأن Shaka قد يعيد الاتصال تلقائياً.
+             */
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * تغيير المسارات
+     * ==========================================
+     */
+
+    player.addEventListener(
+        'trackschanged',
+        () => {
+
+            populateQualityMenu();
+
+            populateAudioMenu();
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * Buffering
+     * ==========================================
+     */
+
+    player.addEventListener(
+        'buffering',
+        event => {
+
+            if (
+                event.buffering
+            ) {
+
+                elements.loadingSpinner.style.display =
+                    'flex';
+
+            } else {
+
+                elements.loadingSpinner.style.display =
+                    'none';
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * زر إعادة المحاولة
+     * ==========================================
+     */
+
+    elements.retryBtn.addEventListener(
+        'click',
+        async () => {
+
+            try {
+
+                await player.unload();
+
+            } catch (error) {}
+
+            initializeApp();
+
+        }
+    );
+
+
+    /*
+     * ==========================================
+     * بدء المشغل
+     * ==========================================
+     */
+
+    feather.replace();
+
+    await initializeApp();
+
+});
+
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+
+</body>
 </html>
