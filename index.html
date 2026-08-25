@@ -4,240 +4,235 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="referrer" content="no-referrer">
-<title>موقع بالتسعين - البث المباشر</title>
+<title>موقع بالتسعين - ذكريات الكرة العراقية</title>
 
+<!-- الخطوط والأيقونات -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.13/shaka-player.compiled.js"></script>
 
 <style>
 /* ==========================================
- * ألوان وتنسيقات الموقع والمشغل
+ * الهوية البصرية (موقع بالتسعين - التسعينات العراقية)
  * ========================================== */
 :root {
-    --primary-color: #ffc107; /* لون موقع بالتسعين */
     --bg-dark: #0f0f0f;
-    --sidebar-bg: #1a1a1a;
+    --bg-card: #1c1c1c;
+    --primary-gold: #d4af37; /* ذهبي كلاسيكي */
+    --iraq-green: #007a3d; /* أخضر العلم العراقي */
+    --text-light: #f5f5f5;
+    --border-color: #333;
+    
+    /* ألوان المشغل */
     --live-color: #e62e2e;
     --not-live-color: rgba(128,128,128,.8);
     --menu-bg: rgba(25,25,25,.95);
 }
 
+* { box-sizing: border-box; }
+
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    margin: 0; padding: 0;
+    width: 100%; min-height: 100vh;
     background: var(--bg-dark);
     font-family: 'Tajawal', sans-serif !important;
+    color: var(--text-light);
     -webkit-tap-highlight-color: transparent;
-    display: flex;
 }
 
 /* ==========================================
- * تنسيقات الواجهة الجانبية (الأقسام والقنوات)
+ * شريط التنقل العلوي (Header)
  * ========================================== */
-#sidebar {
-    width: 320px;
-    background: var(--sidebar-bg);
-    height: 100%;
+header {
+    background: #000;
+    border-bottom: 3px solid var(--primary-gold);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand-container {
     display: flex;
     flex-direction: column;
-    border-left: 1px solid #333;
-    z-index: 20;
 }
 
-.brand-header {
-    padding: 20px;
-    background: #111;
-    text-align: center;
-    border-bottom: 2px solid var(--primary-color);
-}
-
-.brand-header h1 {
+.brand-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary-gold);
     margin: 0;
-    color: var(--primary-color);
-    font-size: 24px;
+    line-height: 1;
+    text-shadow: 2px 2px 0px var(--iraq-green); /* لمسة كلاسيكية */
 }
 
-.list-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-}
-
-.list-item {
-    padding: 15px;
-    margin-bottom: 8px;
-    background: #2a2a2a;
-    border-radius: 8px;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s;
+.brand-tagline {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    letter-spacing: 1px;
 }
 
-.list-item:hover {
-    background: var(--primary-color);
-    color: #000;
-}
-
-.channel-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 4px;
-    object-fit: cover;
-    background: #000;
-}
-
-#back-btn {
-    width: 100%;
-    padding: 12px;
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-bottom: 15px;
-    font-family: inherit;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-#back-btn:hover {
-    background: #444;
-}
-
-/* ==========================================
- * تنسيقات المشغل الأصلية (مع تعديل الحاوية)
- * ========================================== */
-#main-content {
-    flex: 1;
-    position: relative;
-    height: 100%;
-    background: #000;
-}
-
-#player-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#video-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-#video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: #000;
-}
-
-#loading-spinner {
-    position: absolute;
-    z-index: 100;
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(255,255,255,.2);
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    display: none;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-#error-overlay, #welcome-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    background: rgba(0,0,0,.92);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
-}
-
-#error-overlay { display: none; }
-
-#welcome-overlay svg { width: 64px; height: 64px; color: var(--primary-color); margin-bottom: 15px; }
-#error-overlay svg { width: 48px; height: 48px; margin-bottom: 20px; color: #e62e2e; }
-
-#error-retry-btn {
-    margin-top: 15px;
-    padding: 10px 22px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--primary-color);
-    color: #000;
+.nav-buttons button {
+    background: transparent;
+    border: 1px solid var(--primary-gold);
+    color: var(--primary-gold);
+    padding: 8px 16px;
+    border-radius: 6px;
     font-family: inherit;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.controls-overlay {
-    transition: opacity .3s, visibility .3s;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    position: absolute;
-    z-index: 10;
+.nav-buttons button:hover {
+    background: var(--primary-gold);
+    color: #000;
 }
 
-.controls-overlay.visible {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+/* ==========================================
+ * واجهات التطبيق (Sections)
+ * ========================================== */
+.view-section {
+    display: none; /* إخفاء الكل افتراضياً */
+    padding: 30px 40px;
+    animation: fadeIn 0.4s ease;
 }
 
-#bottom-controls-container {
-    bottom: 0; left: 0; right: 0;
-    padding: 5px 15px;
-    background: linear-gradient(to top, rgba(0,0,0,.9), transparent);
+.view-section.active {
+    display: block;
 }
 
-#center-controls {
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    display: flex; align-items: center; gap: 30px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.control-button, .center-control-button {
-    background: none; border: none; color: #fff; cursor: pointer; padding: 0; outline: none; -webkit-tap-highlight-color: transparent;
+.section-title {
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-right: 4px solid var(--iraq-green);
+    padding-right: 15px;
 }
-.control-button:hover { color: var(--primary-color); }
+
+/* ==========================================
+ * نظام الشبكات (Grids للأقسام والقنوات)
+ * ========================================== */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-gold);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
+    background: #252525;
+}
+
+.card i { color: var(--primary-gold); width: 32px; height: 32px; margin-bottom: 15px; }
+.card .card-title { font-size: 16px; font-weight: 700; }
+
+.channel-icon {
+    width: 60px; height: 60px;
+    border-radius: 10px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    background: #000;
+    padding: 5px;
+}
+
+/* ==========================================
+ * قسم المشغل (Theater Mode)
+ * ========================================== */
+#player-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-back {
+    background: #222; border: none; color: #fff;
+    padding: 10px 20px; border-radius: 6px;
+    font-family: inherit; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+}
+.btn-back:hover { background: #333; color: var(--primary-gold); }
+
+/* تنسيقات المشغل الأصلية (معزولة داخل حاوية المشغل) */
+.player-aspect-ratio {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    border: 1px solid #333;
+}
+
+#player-container { position: absolute; inset: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+#video-wrapper { position: relative; width: 100%; height: 100%; z-index: 1; }
+#video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+#loading-spinner { position: absolute; z-index: 100; width: 50px; height: 50px; border: 5px solid rgba(255,255,255,.2); border-top-color: var(--primary-gold); border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#error-overlay { position: absolute; inset: 0; z-index: 100; background: rgba(0,0,0,.92); color: #fff; display: none; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 20px; }
+#error-overlay svg { width: 48px; height: 48px; margin-bottom: 20px; color: #e62e2e; }
+#error-retry-btn { margin-top: 15px; padding: 10px 22px; border: 0; border-radius: 8px; background: var(--primary-gold); color: #000; font-family: inherit; font-weight: 700; cursor: pointer; }
+
+.controls-overlay { transition: opacity .3s, visibility .3s; opacity: 0; visibility: hidden; pointer-events: none; position: absolute; z-index: 10; }
+.controls-overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+#bottom-controls-container { bottom: 0; left: 0; right: 0; padding: 5px 15px; background: linear-gradient(to top, rgba(0,0,0,.9), transparent); }
+#center-controls { top: 50%; left: 50%; transform: translate(-50%,-50%); display: flex; align-items: center; gap: 30px; }
+
+.control-button, .center-control-button { background: none; border: none; color: #fff; cursor: pointer; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+.control-button:hover { color: var(--primary-gold); }
 .control-button svg { width: 22px; height: 22px; }
-
 .center-control-button { width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; }
 .center-control-button svg { width: 48px; height: 48px; filter: drop-shadow(0 0 8px rgba(0,0,0,.8)); }
 #seek-backward-center-btn svg { transform: scaleX(-1); }
 
 .progress-bar-container { width: 100%; padding: 10px 0; cursor: pointer; }
 .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,.3); border-radius: 2px; }
-.progress-played { width: 0; height: 100%; background: var(--primary-color); border-radius: 2px; }
+.progress-played { width: 0; height: 100%; background: var(--primary-gold); border-radius: 2px; }
 
 .bottom-controls { display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
 .controls-left, .controls-right { display: flex; align-items: center; gap: 15px; }
@@ -246,24 +241,16 @@ html, body {
 #live-indicator.is-live { background: var(--live-color); }
 #live-indicator.is-not-live { background: var(--not-live-color); cursor: pointer; }
 
-.popup-menu {
-    position: absolute; bottom: 60px; width: 200px;
-    background: var(--menu-bg); backdrop-filter: blur(8px);
-    border-radius: 8px; z-index: 20; max-height: 220px;
-    overflow-y: auto; display: none; box-shadow: 0 8px 30px rgba(0,0,0,.45);
-}
+.popup-menu { position: absolute; bottom: 60px; width: 200px; background: var(--menu-bg); backdrop-filter: blur(8px); border-radius: 8px; z-index: 20; max-height: 220px; overflow-y: auto; display: none; box-shadow: 0 8px 30px rgba(0,0,0,.45); }
 .popup-menu-list { list-style: none; padding: 5px; margin: 0; }
 .menu-item { display: flex; justify-content: space-between; padding: 8px 10px; border-radius: 5px; cursor: pointer; font-weight: 500; color: #fff; }
 .menu-item:hover { background: rgba(255,255,255,.1); }
-.menu-item.active { color: var(--primary-color); font-weight: 700; }
+.menu-item.active { color: var(--primary-gold); font-weight: 700; }
 
-#player-logo { position: absolute; bottom: 75px; left: 15px; z-index: 9; opacity: .7; height: 28px; }
-#player-logo img { height: 100%; width: auto; }
-
-@media(max-width:800px) {
-    html, body { flex-direction: column; }
-    #sidebar { width: 100%; height: 40%; border-left: none; border-bottom: 1px solid #333; }
-    #main-content { height: 60%; }
+@media(max-width:768px) {
+    header { padding: 15px 20px; }
+    .view-section { padding: 20px; }
+    .grid-container { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .center-control-button { width: 50px; height: 50px; }
     .center-control-button svg { width: 35px; height: 35px; }
 }
@@ -272,179 +259,192 @@ html, body {
 
 <body>
 
-<!-- الواجهة الجانبية للأقسام والقنوات -->
-<aside id="sidebar">
-    <div class="brand-header">
-        <h1>بالتسعين</h1>
+<!-- شريط التنقل -->
+<header>
+    <div class="brand-container">
+        <h1 class="brand-title">بالتسعين</h1>
+        <div class="brand-tagline">ذكريات الكرة العراقية</div>
+    </div>
+    <div class="nav-buttons">
+        <button onclick="showSection('home-section')"><i data-feather="home"></i> الرئيسية</button>
+    </div>
+</header>
+
+<!-- 1. شاشة الأقسام (الرئيسية) -->
+<main id="home-section" class="view-section active">
+    <h2 class="section-title"><i data-feather="grid"></i> تصنيفات البث</h2>
+    <div id="categories-grid" class="grid-container">
+        <div style="grid-column: 1 / -1; text-align: center; color: var(--primary-gold);">جاري تحميل الأقسام من السيرفر...</div>
+    </div>
+</main>
+
+<!-- 2. شاشة القنوات -->
+<main id="channels-section" class="view-section">
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <button class="btn-back" onclick="showSection('home-section')"><i data-feather="arrow-right"></i> عودة</button>
+        <h2 class="section-title" id="current-category-title" style="margin-bottom:0;">القنوات</h2>
+    </div>
+    <div id="channels-grid" class="grid-container">
+        <!-- سيتم تحميل القنوات هنا -->
+    </div>
+</main>
+
+<!-- 3. شاشة المشغل -->
+<main id="player-section" class="view-section">
+    <div class="player-header">
+        <h2 class="section-title" id="now-playing-title" style="margin:0; border:none;"><i data-feather="play-circle"></i> جاري العرض...</h2>
+        <button class="btn-back" id="back-to-channels-btn"><i data-feather="list"></i> قائمة القنوات</button>
     </div>
     
-    <div id="categories-container" class="list-container">
-        <!-- سيتم تحميل الأقسام هنا -->
-        <div style="text-align:center; padding: 20px;">جاري تحميل الأقسام...</div>
-    </div>
-
-    <div id="channels-container" class="list-container" style="display:none;">
-        <button id="back-btn"><i data-feather="arrow-right"></i> رجوع للأقسام</button>
-        <div id="channels-list">
-            <!-- سيتم تحميل القنوات هنا -->
-        </div>
-    </div>
-</aside>
-
-<!-- قسم المشغل -->
-<main id="main-content">
-    <div id="player-container">
-        
-        <div id="welcome-overlay">
-            <i data-feather="tv"></i>
-            <h2>مرحباً بك في بالتسعين</h2>
-            <p>اختر قناة من القائمة الجانبية لبدء البث</p>
-        </div>
-
-        <div id="loading-spinner"></div>
-
-        <div id="error-overlay">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            <h3 id="error-title">فشل تحميل البث</h3>
-            <p id="error-message">تعذر تشغيل البث.</p>
-            <button id="error-retry-btn">إعادة المحاولة</button>
-        </div>
-
-        <div id="video-wrapper">
-            <video id="video" autoplay playsinline preload="auto"></video>
-        </div>
-
-        <a id="player-logo" target="_blank" href="#">
-            <!-- يمكنك وضع لوجو هنا -->
-        </a>
-
-        <div id="quality-popup" class="popup-menu"><ul id="quality-list" class="popup-menu-list"></ul></div>
-        <div id="audio-popup" class="popup-menu"><ul id="audio-list" class="popup-menu-list"></ul></div>
-
-        <div id="center-controls" class="controls-overlay visible">
-            <button class="center-control-button" id="seek-backward-center-btn" title="تقديم 10 ثواني"><i data-feather="fast-forward"></i></button>
-            <button class="center-control-button" id="play-pause-center-btn" title="تشغيل/إيقاف"><i data-feather="pause"></i></button>
-            <button class="center-control-button" id="seek-forward-center-btn" title="رجوع 10 ثواني"><i data-feather="rewind"></i></button>
-        </div>
-
-        <div id="bottom-controls-container" class="controls-overlay visible">
-            <div class="progress-bar-container">
-                <div class="progress-bar"><div class="progress-played"></div></div>
+    <div class="player-aspect-ratio">
+        <div id="player-container">
+            
+            <div id="loading-spinner"></div>
+            
+            <div id="error-overlay">
+                <i data-feather="alert-triangle"></i>
+                <h3 id="error-title">فشل تحميل البث</h3>
+                <p id="error-message">تعذر تشغيل البث، الرجاء المحاولة لاحقاً.</p>
+                <button id="error-retry-btn">إعادة المحاولة</button>
             </div>
-            <div class="bottom-controls">
-                <div class="controls-left">
-                    <button class="control-button" id="play-pause-btn" title="تشغيل/إيقاف"><i data-feather="pause"></i></button>
-                    <button class="control-button" id="mute-btn" title="كتم الصوت"><i data-feather="volume-2"></i></button>
-                    <button id="quality-btn" class="control-button" title="الجودة"><i data-feather="settings"></i></button>
-                    <button id="audio-btn" class="control-button" title="الصوت"><i data-feather="headphones"></i></button>
-                    <div id="live-indicator" class="is-live">● مباشر</div>
-                </div>
-                <div class="controls-right">
-                    <button class="control-button" id="pip-btn" title="نافذة ضمن نافذة"><i data-feather="airplay"></i></button>
-                    <button class="control-button" id="expand-btn" title="تغيير وضع العرض"><i data-feather="maximize"></i></button>
-                    <button class="control-button" id="fullscreen-btn" title="ملء الشاشة"><i data-feather="maximize-2"></i></button>
+
+            <div id="video-wrapper">
+                <video id="video" autoplay playsinline preload="auto"></video>
+            </div>
+
+            <div id="quality-popup" class="popup-menu"><ul id="quality-list" class="popup-menu-list"></ul></div>
+            <div id="audio-popup" class="popup-menu"><ul id="audio-list" class="popup-menu-list"></ul></div>
+
+            <div id="center-controls" class="controls-overlay visible">
+                <button class="center-control-button" id="seek-backward-center-btn"><i data-feather="fast-forward"></i></button>
+                <button class="center-control-button" id="play-pause-center-btn"><i data-feather="pause"></i></button>
+                <button class="center-control-button" id="seek-forward-center-btn"><i data-feather="rewind"></i></button>
+            </div>
+
+            <div id="bottom-controls-container" class="controls-overlay visible">
+                <div class="progress-bar-container"><div class="progress-bar"><div class="progress-played"></div></div></div>
+                <div class="bottom-controls">
+                    <div class="controls-left">
+                        <button class="control-button" id="play-pause-btn"><i data-feather="pause"></i></button>
+                        <button class="control-button" id="mute-btn"><i data-feather="volume-2"></i></button>
+                        <button id="quality-btn" class="control-button"><i data-feather="settings"></i></button>
+                        <button id="audio-btn" class="control-button"><i data-feather="headphones"></i></button>
+                        <div id="live-indicator" class="is-live">● مباشر</div>
+                    </div>
+                    <div class="controls-right">
+                        <button class="control-button" id="pip-btn"><i data-feather="airplay"></i></button>
+                        <button class="control-button" id="expand-btn"><i data-feather="maximize"></i></button>
+                        <button class="control-button" id="fullscreen-btn"><i data-feather="maximize-2"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
 </main>
 
 <script>
 /* ==========================================
- * إعدادات API (Xtream UI)
+ * إعدادات API (البيانات الجديدة)
  * ========================================== */
-const XTREAM_HOST = 'http://pro.netmos.ovh:7355';
-const XTREAM_USER = 'UDJPRCRA1L055B';
-const XTREAM_PASS = 'Ep27yiiwbb56mjkl';
+const XTREAM_HOST = 'http://185.191.126.127:8080';
+const XTREAM_USER = 'b0:99:d7:15:88:50';
+const XTREAM_PASS = '3090914536649669';
 const API_BASE = `${XTREAM_HOST}/player_api.php?username=${XTREAM_USER}&password=${XTREAM_PASS}`;
 
-let globalPlayer; // متغير المشغل العام
+let globalPlayer; 
 let currentStreamUrl = ''; 
+let currentCategoryId = null;
 
 /* ==========================================
- * جلب وعرض البيانات (الأقسام والقنوات)
+ * إدارة التنقل بين الشاشات (SPA Navigation)
  * ========================================== */
-
-async function fetchCategories() {
-    try {
-        const response = await fetch(`${API_BASE}&action=get_live_categories`);
-        const data = await response.json();
-        renderCategories(data);
-    } catch (error) {
-        document.getElementById('categories-container').innerHTML = 
-            '<div style="color:red; text-align:center;">حدث خطأ في جلب الأقسام. تأكد من أن المتصفح يسمح باتصالات HTTP (CORS).</div>';
-        console.error("API Error:", error);
+function showSection(sectionId) {
+    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    
+    // إيقاف الفيديو إذا رجعنا للرئيسية
+    if(sectionId !== 'player-section' && globalPlayer) {
+        try { globalPlayer.unload(); } catch(e){}
     }
 }
 
-function renderCategories(categories) {
-    const container = document.getElementById('categories-container');
-    container.innerHTML = '';
-    
-    categories.forEach(cat => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<i data-feather="folder"></i> ${cat.category_name}`;
-        div.onclick = () => fetchChannels(cat.category_id);
-        container.appendChild(div);
-    });
-    feather.replace();
+/* ==========================================
+ * جلب البيانات وبناء الواجهات
+ * ========================================== */
+async function fetchCategories() {
+    const grid = document.getElementById('categories-grid');
+    try {
+        const response = await fetch(`${API_BASE}&action=get_live_categories`);
+        const data = await response.json();
+        
+        grid.innerHTML = '';
+        data.forEach(cat => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <i data-feather="folder"></i>
+                <div class="card-title">${cat.category_name}</div>
+            `;
+            card.onclick = () => {
+                document.getElementById('current-category-title').innerHTML = `<i data-feather="tv"></i> ${cat.category_name}`;
+                fetchChannels(cat.category_id);
+                feather.replace();
+            };
+            grid.appendChild(card);
+        });
+        feather.replace();
+    } catch (error) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; color:#e62e2e; text-align:center;">حدث خطأ في جلب الأقسام. يرجى التأكد من اتصال السيرفر.</div>';
+    }
 }
 
 async function fetchChannels(categoryId) {
-    const container = document.getElementById('channels-list');
-    container.innerHTML = '<div style="text-align:center;">جاري التحميل...</div>';
-    
-    document.getElementById('categories-container').style.display = 'none';
-    document.getElementById('channels-container').style.display = 'block';
+    currentCategoryId = categoryId;
+    showSection('channels-section');
+    const grid = document.getElementById('channels-grid');
+    grid.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; color: var(--primary-gold);">جاري تحميل القنوات...</div>';
 
     try {
         const response = await fetch(`${API_BASE}&action=get_live_streams&category_id=${categoryId}`);
         const data = await response.json();
-        renderChannels(data);
+        
+        grid.innerHTML = '';
+        data.forEach(channel => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const streamUrl = `${XTREAM_HOST}/live/${XTREAM_USER}/${XTREAM_PASS}/${channel.stream_id}.m3u8`;
+            
+            let iconHtml = channel.stream_icon 
+                ? `<img src="${channel.stream_icon}" class="channel-icon" onerror="this.outerHTML='<i data-feather=\\'monitor\\' style=\\'width:48px;height:48px;margin-bottom:15px;\\'></i>'">` 
+                : `<i data-feather="monitor" style="width:48px;height:48px;margin-bottom:15px;"></i>`;
+
+            card.innerHTML = `
+                ${iconHtml}
+                <div class="card-title">${channel.name}</div>
+            `;
+            card.onclick = () => playStream(streamUrl, channel.name);
+            grid.appendChild(card);
+        });
+        feather.replace();
     } catch (error) {
-        container.innerHTML = '<div style="color:red; text-align:center;">حدث خطأ في جلب القنوات.</div>';
+        grid.innerHTML = '<div style="grid-column: 1 / -1; color:#e62e2e; text-align:center;">حدث خطأ في جلب القنوات.</div>';
     }
 }
 
-function renderChannels(channels) {
-    const container = document.getElementById('channels-list');
-    container.innerHTML = '';
-    
-    channels.forEach(channel => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        
-        // بناء رابط البث
-        // صيغة Xtream للبث: http://host:port/live/user/pass/stream_id.m3u8
-        const streamUrl = `${XTREAM_HOST}/live/${XTREAM_USER}/${XTREAM_PASS}/${channel.stream_id}.m3u8`;
-        
-        let iconHtml = channel.stream_icon 
-            ? `<img src="${channel.stream_icon}" class="channel-icon" onerror="this.style.display='none'">` 
-            : `<i data-feather="tv"></i>`;
-
-        div.innerHTML = `${iconHtml} <span>${channel.name}</span>`;
-        div.onclick = () => playStream(streamUrl, channel.name);
-        container.appendChild(div);
-    });
-    feather.replace();
-}
-
-// زر الرجوع للأقسام
-document.getElementById('back-btn').addEventListener('click', () => {
-    document.getElementById('channels-container').style.display = 'none';
-    document.getElementById('categories-container').style.display = 'block';
+// زر الرجوع للقنوات من داخل المشغل
+document.getElementById('back-to-channels-btn').addEventListener('click', () => {
+    if(currentCategoryId) {
+        showSection('channels-section');
+    } else {
+        showSection('home-section');
+    }
 });
 
 /* ==========================================
- * تهيئة المشغل (Shaka Player)
+ * المشغل (Shaka Player Logic)
  * ========================================== */
-
 const elements = {
     video: document.getElementById('video'),
     playerContainer: document.getElementById('player-container'),
@@ -457,19 +457,17 @@ const elements = {
     pipBtn: document.getElementById('pip-btn'),
     expandBtn: document.getElementById('expand-btn'),
     fullscreenBtn: document.getElementById('fullscreen-btn'),
-    liveIndicator: document.getElementById('live-indicator'),
-    progressPlayed: document.querySelector('.progress-played'),
-    progressBarContainer: document.querySelector('.progress-bar-container'),
     qualityBtn: document.getElementById('quality-btn'),
     audioBtn: document.getElementById('audio-btn'),
     qualityPopup: document.getElementById('quality-popup'),
     audioPopup: document.getElementById('audio-popup'),
     loadingSpinner: document.getElementById('loading-spinner'),
     errorOverlay: document.getElementById('error-overlay'),
-    welcomeOverlay: document.getElementById('welcome-overlay'),
     errorTitle: document.getElementById('error-title'),
     errorMessage: document.getElementById('error-message'),
-    retryBtn: document.getElementById('error-retry-btn')
+    retryBtn: document.getElementById('error-retry-btn'),
+    liveIndicator: document.getElementById('live-indicator'),
+    nowPlayingTitle: document.getElementById('now-playing-title')
 };
 
 let controlsTimeout;
@@ -480,19 +478,16 @@ const expandModes = ['contain', 'cover', 'fill'];
 async function initShakaPlayer() {
     shaka.polyfill.installAll();
     if (!shaka.Player.isBrowserSupported()) {
-        showError('المتصفح غير مدعوم', 'هذا المتصفح لا يدعم تشغيل البث.');
-        return;
+        console.error('المتصفح غير مدعوم'); return;
     }
     
     globalPlayer = new shaka.Player(elements.video);
-    
     globalPlayer.configure({
         manifest: { dash: { ignoreMinBufferTime: true }, hls: { ignoreTextStreamFailures: true } },
-        streaming: { rebufferingGoal: 2, bufferingGoal: 10, bufferBehind: 30, retryParameters: { maxAttempts: 4, baseDelay: 500 } },
-        abr: { enabled: true, defaultBandwidthEstimate: 3000000 }
+        streaming: { rebufferingGoal: 2, bufferingGoal: 10, bufferBehind: 30, retryParameters: { maxAttempts: 4 } },
+        abr: { enabled: true }
     });
 
-    // أحداث المشغل
     globalPlayer.addEventListener('error', e => console.error('[SHAKA ERROR]', e.detail));
     globalPlayer.addEventListener('trackschanged', () => { populateQualityMenu(); populateAudioMenu(); });
     globalPlayer.addEventListener('buffering', e => {
@@ -500,11 +495,13 @@ async function initShakaPlayer() {
     });
 }
 
-// دالة تشغيل القناة عند النقر عليها
 async function playStream(url, channelName) {
     currentStreamUrl = url;
-    elements.welcomeOverlay.style.display = 'none';
-    hideError();
+    elements.nowPlayingTitle.innerHTML = `<i data-feather="play-circle"></i> ${channelName}`;
+    feather.replace();
+    
+    showSection('player-section');
+    elements.errorOverlay.style.display = 'none';
     elements.loadingSpinner.style.display = 'flex';
     
     try {
@@ -516,49 +513,30 @@ async function playStream(url, channelName) {
         populateAudioMenu();
         elements.video.play().catch(e => console.warn('Autoplay blocked', e));
     } catch (error) {
-        showError('فشل التشغيل', `تعذر تشغيل قناة: ${channelName}`);
+        elements.loadingSpinner.style.display = 'none';
+        elements.errorTitle.textContent = 'خطأ في التشغيل';
+        elements.errorMessage.textContent = `تعذر تشغيل قناة: ${channelName}`;
+        elements.errorOverlay.style.display = 'flex';
     }
-}
-
-function showError(title, message) {
-    elements.loadingSpinner.style.display = 'none';
-    elements.errorTitle.textContent = title;
-    elements.errorMessage.textContent = message;
-    elements.errorOverlay.style.display = 'flex';
-    feather.replace();
-}
-
-function hideError() {
-    elements.errorOverlay.style.display = 'none';
 }
 
 elements.retryBtn.addEventListener('click', () => {
-    if(currentStreamUrl) playStream(currentStreamUrl, 'إعادة المحاولة');
+    if(currentStreamUrl) playStream(currentStreamUrl, elements.nowPlayingTitle.innerText);
 });
 
-/* ==========================================
- * وظائف التحكم بالمشغل (كما هي من الكود الخاص بك)
- * ========================================== */
-
+/* منطق التحكم والواجهة (UI Controls) */
 function showControls() {
     [elements.bottomControls, elements.centerControls].forEach(el => el.classList.add('visible'));
     clearTimeout(controlsTimeout);
-    if (!elements.video.paused) {
-        controlsTimeout = setTimeout(hideControls, 3000);
-    }
+    if (!elements.video.paused) controlsTimeout = setTimeout(hideControls, 3000);
 }
-
 function hideControls() {
     if (document.fullscreenElement && elements.video.paused) return;
     [elements.bottomControls, elements.centerControls].forEach(el => el.classList.remove('visible'));
     elements.qualityPopup.style.display = 'none';
     elements.audioPopup.style.display = 'none';
 }
-
-function togglePlay() {
-    if (elements.video.paused) elements.video.play(); else elements.video.pause();
-}
-
+function togglePlay() { if (elements.video.paused) elements.video.play(); else elements.video.pause(); }
 function updatePlayButton() {
     const icon = elements.video.paused ? 'play' : 'pause';
     elements.playPauseBtn.innerHTML = `<i data-feather="${icon}"></i>`;
@@ -583,14 +561,10 @@ function populateQualityMenu() {
     const list = document.getElementById('quality-list');
     list.innerHTML = '';
     const tracks = globalPlayer.getVariantTracks();
-    if (!tracks.length) {
-        list.innerHTML = '<li class="menu-item active">تلقائي</li>'; return;
-    }
-    const isAbrEnabled = globalPlayer.getConfiguration().abr.enabled;
-    const activeTrack = tracks.find(t => t.active);
+    if (!tracks.length) { list.innerHTML = '<li class="menu-item active">تلقائي</li>'; return; }
     
     let autoLi = document.createElement('li');
-    autoLi.className = `menu-item ${isAbrEnabled ? 'active' : ''}`;
+    autoLi.className = `menu-item ${globalPlayer.getConfiguration().abr.enabled ? 'active' : ''}`;
     autoLi.textContent = 'تلقائي';
     autoLi.onclick = () => { globalPlayer.configure('abr.enabled', true); togglePopup(elements.qualityBtn, elements.qualityPopup); };
     list.appendChild(autoLi);
@@ -600,20 +574,16 @@ function populateQualityMenu() {
         const track = tracks.find(t => t.height === h);
         if(!track) return;
         let li = document.createElement('li');
-        li.className = `menu-item ${!isAbrEnabled && activeTrack && activeTrack.height === h ? 'active' : ''}`;
         li.textContent = `${h}p`;
         li.onclick = () => { globalPlayer.configure('abr.enabled', false); globalPlayer.selectVariantTrack(track, true); togglePopup(elements.qualityBtn, elements.qualityPopup); };
         list.appendChild(li);
     });
 }
-
 function populateAudioMenu() {
     const list = document.getElementById('audio-list');
     list.innerHTML = '';
     const tracks = globalPlayer.getAudioLanguagesAndRoles();
-    if (!tracks || !tracks.length) {
-        list.innerHTML = '<li class="menu-item active">الصوت الافتراضي</li>'; return;
-    }
+    if (!tracks || !tracks.length) { list.innerHTML = '<li class="menu-item active">الصوت الافتراضي</li>'; return; }
     const currentLang = globalPlayer.getAudioLanguages()[0];
     tracks.forEach(t => {
         let li = document.createElement('li');
@@ -624,18 +594,17 @@ function populateAudioMenu() {
     });
 }
 
-// أحداث الأزرار والحركة
+// الأحداث (Events)
 elements.playPauseBtn.addEventListener('click', togglePlay);
 elements.playPauseCenterBtn.addEventListener('click', togglePlay);
 elements.muteBtn.addEventListener('click', () => elements.video.muted = !elements.video.muted);
-document.getElementById('seek-forward-center-btn').addEventListener('click', () => elements.video.currentTime -= 10);
-document.getElementById('seek-backward-center-btn').addEventListener('click', () => elements.video.currentTime += 10);
 elements.expandBtn.addEventListener('click', () => {
     expandModeIndex = (expandModeIndex + 1) % expandModes.length;
     elements.video.style.objectFit = expandModes[expandModeIndex];
 });
 elements.fullscreenBtn.addEventListener('click', async () => {
-    if (!document.fullscreenElement) await elements.playerContainer.requestFullscreen();
+    const playerAspect = document.querySelector('.player-aspect-ratio');
+    if (!document.fullscreenElement) await playerAspect.requestFullscreen();
     else await document.exitFullscreen();
 });
 document.addEventListener('fullscreenchange', () => {
@@ -647,7 +616,11 @@ elements.videoWrapper.addEventListener('click', e => {
     clearTimeout(clickTimer);
     clickTimer = setTimeout(() => { elements.bottomControls.classList.contains('visible') ? hideControls() : showControls(); }, 200);
 });
-elements.video.addEventListener('dblclick', async () => { clearTimeout(clickTimer); if (!document.fullscreenElement) await elements.playerContainer.requestFullscreen(); else await document.exitFullscreen(); });
+elements.video.addEventListener('dblclick', async () => {
+    clearTimeout(clickTimer);
+    if (!document.fullscreenElement) await document.querySelector('.player-aspect-ratio').requestFullscreen();
+    else await document.exitFullscreen();
+});
 elements.playerContainer.addEventListener('mousemove', showControls);
 elements.video.addEventListener('play', () => { updatePlayButton(); showControls(); });
 elements.video.addEventListener('pause', () => { updatePlayButton(); showControls(); });
@@ -658,14 +631,12 @@ elements.video.addEventListener('volumechange', () => {
 elements.qualityBtn.addEventListener('click', e => { e.stopPropagation(); togglePopup(e.currentTarget, elements.qualityPopup); populateQualityMenu(); });
 elements.audioBtn.addEventListener('click', e => { e.stopPropagation(); togglePopup(e.currentTarget, elements.audioPopup); populateAudioMenu(); });
 
-
-// بدء التشغيل
+// التشغيل الأولي عند فتح الصفحة
 document.addEventListener('DOMContentLoaded', async () => {
     feather.replace();
     await initShakaPlayer();
-    fetchCategories(); // جلب الأقسام تلقائياً عند فتح الموقع
+    fetchCategories();
 });
-
 </script>
 </body>
 </html>
