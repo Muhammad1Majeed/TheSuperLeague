@@ -1,374 +1,1487 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بالتسعين | منصة رياضية عراقية</title>
-    <meta name="description" content="بالتسعين — منصة رياضية بهوية عراقية تجمع أجواء الكرة العراقية وذكريات التسعينات مع تجربة مشاهدة رياضية حديثة.">
-    <link rel="icon" href="https://h.top4top.io/p_3889g97e91.jpg">
-    
-    <!-- Google Fonts: Tajawal -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Shaka Player UI CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/controls.min.css">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            900: '#050505',
-                            800: '#111111',
-                            accent: '#E50914'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Tajawal', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
 
-    <style>
-        body { background-color: #050505; color: white; -webkit-tap-highlight-color: transparent; }
-        .glass-panel { background: rgba(17, 17, 17, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #E50914; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+<meta charset="UTF-8">
 
-    <!-- React, ReactDOM, and Babel -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Shaka Player -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.ui.min.js"></script>
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+>
+
+<meta name="referrer" content="no-referrer">
+
+<title>بالتسعين</title>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap"
+  rel="stylesheet"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.13/shaka-player.compiled.js"></script>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #050505;
+  color: white;
+  font-family: "Tajawal", sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+.header {
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1000;
+
+  height: 72px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 25px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12,12,12,.98),
+      rgba(5,5,5,.95)
+    );
+
+  border-bottom:
+    1px solid rgba(255,255,255,.07);
+
+  backdrop-filter: blur(15px);
+}
+
+.brand {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  font-size: 23px;
+
+  font-weight: 800;
+}
+
+.brand img {
+
+  width: 44px;
+
+  height: 44px;
+
+  object-fit: cover;
+
+  border-radius: 10px;
+}
+
+.search {
+
+  width: min(420px,45vw);
+
+  padding: 11px 16px;
+
+  border-radius: 12px;
+
+  border:
+    1px solid rgba(255,255,255,.1);
+
+  background: rgba(255,255,255,.06);
+
+  color: white;
+
+  outline: none;
+
+  text-align: right;
+}
+
+.search:focus {
+
+  border-color:
+    rgba(255,193,7,.7);
+}
+
+.container {
+
+  width: min(1400px,94%);
+
+  margin: auto;
+
+  padding: 25px 0 50px;
+}
+
+.hero {
+
+  min-height: 230px;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  padding: 35px;
+
+  margin-bottom: 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  background:
+
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255,193,7,.18),
+      transparent 35%
+    ),
+
+    linear-gradient(
+      135deg,
+      #171717,
+      #070707
+    );
+
+  border:
+    1px solid rgba(255,255,255,.08);
+}
+
+.hero h1 {
+
+  margin: 0 0 10px;
+
+  font-size: clamp(30px,5vw,55px);
+}
+
+.hero p {
+
+  margin: 0;
+
+  color: #aaa;
+
+  font-size: 16px;
+}
+
+.section-title {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin: 30px 0 15px;
+
+  font-size: 21px;
+
+  font-weight: 800;
+}
+
+.channels {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill,minmax(180px,1fr));
+
+  gap: 14px;
+}
+
+.channel {
+
+  position: relative;
+
+  min-height: 120px;
+
+  padding: 18px;
+
+  border-radius: 17px;
+
+  cursor: pointer;
+
+  background:
+    linear-gradient(
+      145deg,
+      #171717,
+      #0b0b0b
+    );
+
+  border:
+    1px solid rgba(255,255,255,.07);
+
+  transition:
+    transform .2s,
+    border-color .2s,
+    background .2s;
+}
+
+.channel:hover {
+
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(255,193,7,.5);
+
+  background:
+    linear-gradient(
+      145deg,
+      #202020,
+      #0c0c0c
+    );
+}
+
+.channel-number {
+
+  position: absolute;
+
+  top: 10px;
+
+  left: 10px;
+
+  font-size: 11px;
+
+  color: #777;
+}
+
+.channel-logo {
+
+  width: 55px;
+
+  height: 55px;
+
+  object-fit: contain;
+
+  margin-bottom: 10px;
+
+  display: block;
+}
+
+.channel-name {
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.status {
+
+  margin-top: 6px;
+
+  font-size: 11px;
+
+  color: #777;
+}
+
+.status.live {
+
+  color: #4caf50;
+}
+
+.empty {
+
+  padding: 50px;
+
+  text-align: center;
+
+  color: #777;
+}
+
+#player {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: none;
+
+  background: #000;
+}
+
+#player.active {
+
+  display: block;
+}
+
+#video {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+  background: #000;
+}
+
+.player-top {
+
+  position: absolute;
+
+  top: 0;
+
+  right: 0;
+
+  left: 0;
+
+  z-index: 20;
+
+  padding: 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background:
+    linear-gradient(
+      #000c,
+      transparent
+    );
+}
+
+.player-title {
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+.player-close {
+
+  width: 42px;
+
+  height: 42px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #ffffff15;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.spinner {
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 50%;
+
+  width: 48px;
+
+  height: 48px;
+
+  margin:
+    -24px 0 0 -24px;
+
+  border:
+    4px solid #ffffff20;
+
+  border-top-color:
+    #ffc107;
+
+  border-radius: 50%;
+
+  animation:
+    spin .8s linear infinite;
+
+  display: none;
+
+  z-index: 15;
+}
+
+.spinner.show {
+
+  display: block;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+.player-error {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 30;
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  text-align: center;
+
+  padding: 25px;
+
+  background: #000e;
+}
+
+.player-error.show {
+
+  display: flex;
+}
+
+.player-error h2 {
+
+  margin-bottom: 10px;
+}
+
+.player-error p {
+
+  color: #aaa;
+
+  max-width: 500px;
+
+  line-height: 1.8;
+}
+
+.retry {
+
+  border: 0;
+
+  padding: 11px 25px;
+
+  border-radius: 10px;
+
+  background: #ffc107;
+
+  color: #000;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+@media(max-width:700px) {
+
+  .header {
+
+    padding: 0 12px;
+
+  }
+
+  .brand {
+
+    font-size: 18px;
+
+  }
+
+  .brand img {
+
+    width: 38px;
+
+    height: 38px;
+
+  }
+
+  .search {
+
+    width: 48vw;
+
+  }
+
+  .hero {
+
+    padding: 25px;
+
+  }
+
+  .channels {
+
+    grid-template-columns:
+      repeat(2,1fr);
+
+  }
+
+}
+
+</style>
+
 </head>
+
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef, useMemo } = React;
+<header class="header">
 
-        // ================= CONFIGURATION =================
-        const CONFIG = {
-            NAME: "بالتسعين",
-            LOGO: "https://h.top4top.io/p_3889g97e91.jpg",
-            M3U_SOURCE: "https://raw.githubusercontent.com/zezo81795-cell/IO/refs/heads/main/BEINSPORTS.M3U",
-            ALWAN_BASE: "https://script1.tvkaidn.workers.dev/alwan",
-            ALWAN_COUNT: 20
-        };
+  <div class="brand">
 
-        // ================= ICONS =================
-        const Icons = {
-            Search: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>,
-            Play: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>,
-            Heart: ({ active }) => <svg className={`w-5 h-5 ${active ? 'text-red-500 fill-current' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>,
-            Back: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-        };
+    <img
+      src="https://h.top4top.io/p_3889g97e91.jpg"
+      alt="بالتسعين"
+    >
 
-        // ================= SHAKA PLAYER COMPONENT =================
-        function VideoPlayer({ channel, onBack }) {
-            const videoRef = useRef(null);
-            const containerRef = useRef(null);
-            const [error, setError] = useState(null);
+    <span>بالتسعين</span>
 
-            useEffect(() => {
-                shaka.polyfill.installAll();
-                if (!shaka.Player.isBrowserSupported()) {
-                    setError("متصفحك لا يدعم المشغل الحديث.");
-                    return;
-                }
+  </div>
 
-                const player = new shaka.Player(videoRef.current);
-                const ui = new shaka.ui.Overlay(player, containerRef.current, videoRef.current);
-                
-                // Advanced Streaming Configuration
-                player.configure({
-                    streaming: {
-                        bufferingGoal: 30,
-                        rebufferingGoal: 2,
-                        retryParameters: { maxAttempts: 5, baseDelay: 1000, backoffFactor: 2 }
-                    }
-                });
+  <input
+    id="search"
+    class="search"
+    type="search"
+    placeholder="ابحث عن قناة..."
+  >
 
-                player.addEventListener('error', (e) => {
-                    console.error('Player Error:', e);
-                    setError("البث غير متاح حالياً. حاول مجدداً لاحقاً.");
-                });
+</header>
 
-                player.load(channel.url).catch(() => {
-                    setError("تعذر تحميل القناة. قد يكون البث متوقفاً من المصدر.");
-                });
 
-                return () => {
-                    player.destroy();
-                    ui.destroy();
-                };
-            }, [channel]);
+<main class="container">
 
-            return (
-                <div className="fixed inset-0 z-50 bg-black flex flex-col fade-in">
-                    {/* Player Header */}
-                    <div className="absolute top-0 w-full z-10 p-4 bg-gradient-to-b from-black/90 to-transparent flex items-center gap-4">
-                        <button onClick={onBack} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition">
-                            <Icons.Back />
-                        </button>
-                        <div className="flex items-center gap-3">
-                            <img src={channel.logo || CONFIG.LOGO} alt="logo" className="w-10 h-10 object-contain rounded bg-white/5 p-1" />
-                            <div>
-                                <h2 className="font-bold text-lg">{channel.name}</h2>
-                                <div className="flex items-center gap-2 text-xs">
-                                    <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
-                                    مباشر
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <section class="hero">
 
-                    {/* Video Container */}
-                    <div ref={containerRef} className="w-full h-full relative">
-                        {error && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black z-20">
-                                <div className="text-center p-6 glass-panel rounded-xl">
-                                    <p className="text-xl mb-4">{error}</p>
-                                    <button onClick={() => window.location.reload()} className="px-6 py-2 bg-brand-accent rounded-full font-bold">تحديث</button>
-                                </div>
-                            </div>
-                        )}
-                        <video ref={videoRef} className="w-full h-full" autoPlay playsInline></video>
-                    </div>
-                </div>
-            );
+    <div>
+
+      <h1>بالتسعين</h1>
+
+      <p>
+        أجواء الكرة العراقية وذكريات التسعينات
+        بهوية رياضية عراقية مختلفة.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <div class="section-title">
+
+    <span>
+      القنوات
+    </span>
+
+    <span
+      id="channelCount"
+      style="color:#777;font-size:13px"
+    >
+      0 قناة
+    </span>
+
+  </div>
+
+
+  <section
+    id="channels"
+    class="channels"
+  ></section>
+
+</main>
+
+
+<div id="player">
+
+  <video
+    id="video"
+    playsinline
+    autoplay
+    muted
+    preload="auto"
+  ></video>
+
+
+  <div class="player-top">
+
+    <div
+      id="playerTitle"
+      class="player-title"
+    >
+      بالتسعين
+    </div>
+
+    <button
+      id="closePlayer"
+      class="player-close"
+    >
+      ✕
+    </button>
+
+  </div>
+
+
+  <div
+    id="spinner"
+    class="spinner"
+  ></div>
+
+
+  <div
+    id="playerError"
+    class="player-error"
+  >
+
+    <h2>
+      تعذر تشغيل القناة
+    </h2>
+
+    <p id="errorText">
+      حدث خطأ أثناء تحميل البث.
+    </p>
+
+    <button
+      id="retry"
+      class="retry"
+    >
+      إعادة المحاولة
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* ==========================================
+   إعدادات الموقع
+========================================== */
+
+const CONFIG = {
+
+  M3U_URL:
+    "https://raw.githubusercontent.com/zezo81795-cell/IO/refs/heads/main/BEINSPORTS.M3U",
+
+  ALWAN_COUNT:
+    20,
+
+  ALWAN_BASE:
+    "https://script1.tvkaidn.workers.dev/alwan",
+
+  PROXY_URL:
+    "https://shabakaty.haldlym07.workers.dev"
+
+};
+
+
+/* ==========================================
+   العناصر
+========================================== */
+
+const channelsEl =
+  document.getElementById("channels");
+
+const searchEl =
+  document.getElementById("search");
+
+const channelCountEl =
+  document.getElementById("channelCount");
+
+const playerEl =
+  document.getElementById("player");
+
+const video =
+  document.getElementById("video");
+
+const playerTitle =
+  document.getElementById("playerTitle");
+
+const spinner =
+  document.getElementById("spinner");
+
+const playerError =
+  document.getElementById("playerError");
+
+const errorText =
+  document.getElementById("errorText");
+
+
+let player = null;
+
+let allChannels = [];
+
+let currentChannel = null;
+
+
+/* ==========================================
+   تهيئة Shaka
+========================================== */
+
+shaka.polyfill.installAll();
+
+
+if (!shaka.Player.isBrowserSupported()) {
+
+  alert(
+    "المتصفح لا يدعم تشغيل البث."
+  );
+
+}
+
+
+/* ==========================================
+   إنشاء Shaka
+========================================== */
+
+player =
+  new shaka.Player(video);
+
+
+player.configure({
+
+  streaming: {
+
+    rebufferingGoal: 2,
+
+    bufferingGoal: 10,
+
+    bufferBehind: 30,
+
+    retryParameters: {
+
+      maxAttempts: 5,
+
+      baseDelay: 500,
+
+      backoffFactor: 1.5,
+
+      fuzzFactor: .5,
+
+      timeout: 10000
+
+    }
+
+  },
+
+  abr: {
+
+    enabled: true,
+
+    defaultBandwidthEstimate:
+      3000000
+
+  },
+
+  manifest: {
+
+    dash: {
+
+      ignoreMinBufferTime:
+        true
+
+    },
+
+    hls: {
+
+      ignoreTextStreamFailures:
+        true
+
+    }
+
+  }
+
+});
+
+
+/* ==========================================
+   تحويل الرابط إلى Proxy
+========================================== */
+
+function proxyUrl(url) {
+
+  if (!url) {
+    return "";
+  }
+
+  /*
+   * إذا كان الرابط HTTPS
+   * نتركه كما هو.
+   */
+
+  if (
+    url.startsWith("https://")
+  ) {
+
+    return url;
+
+  }
+
+  /*
+   * HTTP يحتاج Proxy.
+   */
+
+  if (
+    url.startsWith("http://")
+  ) {
+
+    return (
+      CONFIG.PROXY_URL +
+      "/proxy?url=" +
+      encodeURIComponent(url)
+    );
+
+  }
+
+  return url;
+
+}
+
+
+/* ==========================================
+   قراءة M3U
+========================================== */
+
+async function loadM3U() {
+
+  try {
+
+    const response =
+      await fetch(
+        CONFIG.M3U_URL,
+        {
+          cache: "no-store"
+        }
+      );
+
+    if (!response.ok) {
+
+      throw new Error(
+        "M3U HTTP " +
+        response.status
+      );
+
+    }
+
+    const text =
+      await response.text();
+
+    const parsed =
+      parseM3U(text);
+
+    allChannels =
+      allChannels.concat(parsed);
+
+  } catch (error) {
+
+    console.error(
+      "M3U error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   تحليل M3U
+========================================== */
+
+function parseM3U(text) {
+
+  const lines =
+    text
+      .split(/\r?\n/)
+      .map(
+        x => x.trim()
+      )
+      .filter(Boolean);
+
+  const result = [];
+
+  let info = null;
+
+  for (
+    let i = 0;
+    i < lines.length;
+    i++
+  ) {
+
+    const line =
+      lines[i];
+
+    if (
+      line.startsWith(
+        "#EXTINF:"
+      )
+    ) {
+
+      info = line;
+
+      continue;
+
+    }
+
+    if (
+      !line.startsWith("#") &&
+      info
+    ) {
+
+      const url =
+        line;
+
+      const name =
+        getAttribute(
+          info,
+          "tvg-name"
+        ) ||
+        getName(info) ||
+        "قناة";
+
+      const logo =
+        getAttribute(
+          info,
+          "tvg-logo"
+        ) ||
+        "";
+
+      result.push({
+
+        name,
+
+        logo,
+
+        url,
+
+        type:
+          "m3u"
+
+      });
+
+      info = null;
+
+    }
+
+  }
+
+  return result;
+
+}
+
+
+/* ==========================================
+   استخراج اسم القناة
+========================================== */
+
+function getName(line) {
+
+  const comma =
+    line.indexOf(",");
+
+  if (comma === -1) {
+
+    return "قناة";
+
+  }
+
+  return line
+    .substring(comma + 1)
+    .trim();
+
+}
+
+
+/* ==========================================
+   استخراج Attribute
+========================================== */
+
+function getAttribute(
+  line,
+  attribute
+) {
+
+  const regex =
+    new RegExp(
+      attribute +
+      '="([^"]*)"',
+      "i"
+    );
+
+  const match =
+    line.match(regex);
+
+  return match
+    ? match[1]
+    : "";
+
+}
+
+
+/* ==========================================
+   إضافة قنوات ألوان
+========================================== */
+
+function addAlwanChannels() {
+
+  for (
+    let i = 1;
+    i <= CONFIG.ALWAN_COUNT;
+    i++
+  ) {
+
+    allChannels.push({
+
+      name:
+        "ألوان " + i,
+
+      logo:
+        CONFIG.ALWAN_BASE +
+        i +
+        ".png",
+
+      url:
+        CONFIG.ALWAN_BASE +
+        i +
+        ".m3u8",
+
+      type:
+        "alwan"
+
+    });
+
+  }
+
+}
+
+
+/* ==========================================
+   رسم القنوات
+========================================== */
+
+function renderChannels(
+  channels
+) {
+
+  channelsEl.innerHTML = "";
+
+  channelCountEl.textContent =
+    channels.length +
+    " قناة";
+
+  if (!channels.length) {
+
+    channelsEl.innerHTML =
+      `<div class="empty">
+        لا توجد قنوات.
+      </div>`;
+
+    return;
+
+  }
+
+  channels.forEach(
+    (channel, index) => {
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+      card.className =
+        "channel";
+
+      card.dataset.name =
+        channel.name
+          .toLowerCase();
+
+      card.innerHTML = `
+
+        <span class="channel-number">
+          ${index + 1}
+        </span>
+
+        ${
+          channel.logo
+            ? `
+              <img
+                class="channel-logo"
+                src="${escapeHTML(channel.logo)}"
+                loading="lazy"
+                onerror="this.style.display='none'"
+              >
+            `
+            : ""
         }
 
-        // ================= MAIN APP COMPONENT =================
-        function App() {
-            const [channels, setChannels] = useState([]);
-            const [loading, setLoading] = useState(true);
-            const [activeChannel, setActiveChannel] = useState(null);
-            const [search, setSearch] = useState('');
-            const [activeCategory, setActiveCategory] = useState('الكل');
-            const [favorites, setFavorites] = useState([]);
-            const [showFavorites, setShowFavorites] = useState(false);
+        <div class="channel-name">
+          ${escapeHTML(channel.name)}
+        </div>
 
-            // Load Favorites
-            useEffect(() => {
-                const saved = localStorage.getItem('90s_favorites');
-                if (saved) setFavorites(JSON.parse(saved));
-            }, []);
+        <div class="status live">
+          ● متاحة للمشاهدة
+        </div>
 
-            const toggleFav = (e, id) => {
-                e.stopPropagation();
-                let newFavs = favorites.includes(id) ? favorites.filter(f => f !== id) : [...favorites, id];
-                setFavorites(newFavs);
-                localStorage.setItem('90s_favorites', JSON.stringify(newFavs));
-            };
+      `;
 
-            // Fetch & Parse Channels
-            useEffect(() => {
-                const fetchChannels = async () => {
-                    try {
-                        let parsedChannels = [];
-                        
-                        // 1. Fetch M3U
-                        try {
-                            const res = await fetch(CONFIG.M3U_SOURCE);
-                            const text = await res.text();
-                            const lines = text.split('\n');
-                            let current = {};
-                            
-                            lines.forEach(line => {
-                                line = line.trim();
-                                if (line.startsWith('#EXTINF')) {
-                                    const tvgLogo = line.match(/tvg-logo="([^"]+)"/);
-                                    const group = line.match(/group-title="([^"]+)"/);
-                                    const name = line.split(',')[1];
-                                    current = {
-                                        name: name ? name.trim() : 'قناة',
-                                        logo: tvgLogo ? tvgLogo[1] : null,
-                                        group: group ? group[1] : 'عام'
-                                    };
-                                } else if (line.startsWith('http')) {
-                                    if (current.name) {
-                                        current.url = line;
-                                        current.id = btoa(line).substring(0, 15);
-                                        parsedChannels.push(current);
-                                        current = {};
-                                    }
-                                }
-                            });
-                        } catch (err) {
-                            console.warn("M3U Fetch Error (CORS or Network):", err);
-                        }
+      card.addEventListener(
+        "click",
+        () => {
 
-                        // 2. Generate Alwan Channels
-                        const alwanChannels = Array.from({ length: CONFIG.ALWAN_COUNT }).map((_, i) => ({
-                            id: `alwan_${i+1}`,
-                            name: `ألوان ${i+1}`,
-                            group: 'ألوان',
-                            logo: CONFIG.LOGO,
-                            url: `${CONFIG.ALWAN_BASE}${i+1}.m3u8`
-                        }));
+          openChannel(
+            channel
+          );
 
-                        // 3. Merge and deduplicate
-                        const all = [...parsedChannels, ...alwanChannels];
-                        const unique = Array.from(new Map(all.map(item => [item.url, item])).values());
-                        
-                        setChannels(unique);
-                    } catch (error) {
-                        console.error("Global Fetch Error", error);
-                    } finally {
-                        setLoading(false);
-                    }
-                };
-                fetchChannels();
-            }, []);
-
-            const categories = ['الكل', 'المفضلة', ...new Set(channels.map(c => c.group))];
-
-            const filteredChannels = useMemo(() => {
-                return channels.filter(c => {
-                    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
-                    const matchesCat = activeCategory === 'الكل' || c.group === activeCategory;
-                    const matchesFav = activeCategory === 'المفضلة' ? favorites.includes(c.id) : true;
-                    return matchesSearch && matchesCat && matchesFav;
-                });
-            }, [channels, search, activeCategory, favorites]);
-
-            if (loading) {
-                return (
-                    <div className="h-screen flex flex-col items-center justify-center bg-brand-900 fade-in">
-                        <img src={CONFIG.LOGO} alt="Logo" className="w-32 h-32 mb-8 rounded-2xl shadow-[0_0_30px_rgba(229,9,20,0.3)] animate-pulse" />
-                        <div className="loader mb-4"></div>
-                        <h2 className="text-xl font-bold text-gray-300">جاري تحميل المنصة...</h2>
-                    </div>
-                );
-            }
-
-            if (activeChannel) {
-                return <VideoPlayer channel={activeChannel} onBack={() => setActiveChannel(null)} />;
-            }
-
-            return (
-                <div className="min-h-screen pb-20 bg-brand-900 fade-in">
-                    {/* Header */}
-                    <header className="sticky top-0 z-30 glass-panel border-b-0 border-white/10">
-                        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-                            <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.location.reload()}>
-                                <img src={CONFIG.LOGO} className="w-12 h-12 rounded-lg shadow-lg" alt="Logo" />
-                                <h1 className="text-2xl font-black tracking-tight">{CONFIG.NAME}</h1>
-                            </div>
-                            <div className="hidden md:flex relative w-96">
-                                <input 
-                                    type="text" 
-                                    placeholder="ابحث عن قناة أو بطولة..." 
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full bg-brand-800 border border-white/10 rounded-full py-2.5 px-6 pr-12 text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                                />
-                                <div className="absolute right-4 top-3 text-gray-400"><Icons.Search /></div>
-                            </div>
-                        </div>
-                    </header>
-
-                    {/* Hero Section */}
-                    {!search && activeCategory === 'الكل' && (
-                        <section className="relative w-full h-[40vh] flex items-center justify-center overflow-hidden border-b border-white/5">
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-800 to-brand-900"></div>
-                            <div className="relative z-10 text-center px-4 space-y-4">
-                                <h2 className="text-4xl md:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
-                                    ذكريات الكرة العراقية... بروح اليوم
-                                </h2>
-                                <p className="text-gray-400 text-lg">أفضل القنوات الرياضية وألوان في مكان واحد.</p>
-                            </div>
-                        </section>
-                    )}
-
-                    <main className="max-w-7xl mx-auto px-4 py-8">
-                        {/* Mobile Search */}
-                        <div className="md:hidden relative mb-6">
-                            <input 
-                                type="text" 
-                                placeholder="ابحث..." 
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full bg-brand-800 border border-white/10 rounded-xl py-3 px-4 pr-10 text-sm focus:outline-none focus:border-brand-accent"
-                            />
-                            <div className="absolute right-3 top-3 text-gray-400"><Icons.Search /></div>
-                        </div>
-
-                        {/* Categories List */}
-                        <div className="flex overflow-x-auto hide-scroll gap-3 mb-8 pb-2">
-                            {categories.map((cat, i) => (
-                                <button 
-                                    key={i}
-                                    onClick={() => setActiveCategory(cat)}
-                                    className={`whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === cat ? 'bg-brand-accent text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]' : 'bg-brand-800 text-gray-400 hover:bg-white/10'}`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Channels Grid */}
-                        {filteredChannels.length === 0 ? (
-                            <div className="text-center py-20 text-gray-500">لا توجد قنوات مطابقة للبحث.</div>
-                        ) : (
-                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                                {filteredChannels.map(channel => (
-                                    <div 
-                                        key={channel.id} 
-                                        onClick={() => setActiveChannel(channel)}
-                                        className="group relative bg-brand-800 border border-white/5 rounded-2xl p-4 hover:border-brand-accent/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-                                    >
-                                        <div className="absolute top-3 right-3 z-10 flex gap-2">
-                                            <div className="bg-black/60 backdrop-blur-md px-2 py-1 rounded-md flex items-center gap-1.5 text-[10px] font-bold">
-                                                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
-                                                مباشر
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="absolute top-3 left-3 z-10">
-                                            <button onClick={(e) => toggleFav(e, channel.id)} className="bg-black/60 p-1.5 rounded-full hover:bg-black">
-                                                <Icons.Heart active={favorites.includes(channel.id)} />
-                                            </button>
-                                        </div>
-
-                                        <div className="aspect-square relative flex items-center justify-center bg-black/30 rounded-xl mb-4 group-hover:bg-black/50 transition-colors">
-                                            <img 
-                                                src={channel.logo || CONFIG.LOGO} 
-                                                onError={(e) => e.target.src = CONFIG.LOGO}
-                                                alt={channel.name} 
-                                                className="w-20 h-20 object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-300" 
-                                            />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-xl">
-                                                <div className="bg-brand-accent p-3 rounded-full shadow-[0_0_15px_rgba(229,9,20,0.8)] text-white transform scale-50 group-hover:scale-100 transition-transform duration-300">
-                                                    <Icons.Play />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <h3 className="font-bold text-sm text-gray-100 truncate text-center">{channel.name}</h3>
-                                        <p className="text-xs text-gray-500 mt-1 text-center truncate">{channel.group}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </main>
-                </div>
-            );
         }
+      );
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+      channelsEl.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================
+   فتح القناة
+========================================== */
+
+async function openChannel(
+  channel
+) {
+
+  currentChannel =
+    channel;
+
+  playerEl.classList.add(
+    "active"
+  );
+
+  playerTitle.textContent =
+    channel.name;
+
+  playerError.classList.remove(
+    "show"
+  );
+
+  spinner.classList.add(
+    "show"
+  );
+
+  try {
+
+    await player.unload();
+
+    const stream =
+      proxyUrl(
+        channel.url
+      );
+
+    console.log(
+      "Playing:",
+      stream
+    );
+
+    await player.load(
+      stream
+    );
+
+    try {
+
+      await video.play();
+
+    } catch (e) {
+
+      console.warn(
+        "Autoplay blocked",
+        e
+      );
+
+    }
+
+    spinner.classList.remove(
+      "show"
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Playback error:",
+      error
+    );
+
+    spinner.classList.remove(
+      "show"
+    );
+
+    showPlayerError(
+      error
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   خطأ المشغل
+========================================== */
+
+function showPlayerError(
+  error
+) {
+
+  let message =
+    "تعذر تشغيل القناة.";
+
+  if (
+    error &&
+    error.code
+  ) {
+
+    message +=
+      " رمز الخطأ: " +
+      error.code;
+
+  }
+
+  errorText.textContent =
+    message;
+
+  playerError.classList.add(
+    "show"
+  );
+
+}
+
+
+/* ==========================================
+   إعادة المحاولة
+========================================== */
+
+document
+  .getElementById("retry")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        currentChannel
+      ) {
+
+        openChannel(
+          currentChannel
+        );
+
+      }
+
+    }
+  );
+
+
+/* ==========================================
+   إغلاق المشغل
+========================================== */
+
+document
+  .getElementById("closePlayer")
+  .addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        await player.unload();
+
+      } catch {}
+
+      video.pause();
+
+      playerEl.classList.remove(
+        "active"
+      );
+
+    }
+  );
+
+
+/* ==========================================
+   البحث
+========================================== */
+
+searchEl.addEventListener(
+  "input",
+  () => {
+
+    const query =
+      searchEl.value
+        .trim()
+        .toLowerCase();
+
+    if (!query) {
+
+      renderChannels(
+        allChannels
+      );
+
+      return;
+
+    }
+
+    const filtered =
+      allChannels.filter(
+        channel =>
+          channel.name
+            .toLowerCase()
+            .includes(query)
+      );
+
+    renderChannels(
+      filtered
+    );
+
+  }
+);
+
+
+/* ==========================================
+   حماية HTML
+========================================== */
+
+function escapeHTML(
+  value
+) {
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* ==========================================
+   أخطاء Shaka
+========================================== */
+
+player.addEventListener(
+  "error",
+  event => {
+
+    console.error(
+      "SHAKA ERROR:",
+      event.detail
+    );
+
+  }
+);
+
+
+player.addEventListener(
+  "buffering",
+  event => {
+
+    if (
+      event.buffering
+    ) {
+
+      spinner.classList.add(
+        "show"
+      );
+
+    } else {
+
+      spinner.classList.remove(
+        "show"
+      );
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   بدء الموقع
+========================================== */
+
+async function init() {
+
+  /*
+   * تحميل M3U
+   */
+
+  await loadM3U();
+
+
+  /*
+   * إضافة ألوان
+   */
+
+  addAlwanChannels();
+
+
+  /*
+   * رسم القنوات
+   */
+
+  renderChannels(
+    allChannels
+  );
+
+}
+
+
+init();
+
+</script>
+
 </body>
 </html>
